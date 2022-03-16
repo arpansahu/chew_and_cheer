@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="row " style="padding: 100px" >
+        {% if request.user.is_authenticated %}
+            <p style="align-content: center">
+                <a class="btn btn-outline-primary" href="{% url 'crudformhome' %}">CRUD USING DJANGO FORMS</a> |
+            </p>
+            <p style="align-content: center">
+                <a class="btn btn-outline-primary" href="{% url 'crud_ajax' %}">CRUD USING AJAX AND JQUERY/Class Views</a> |
+            </p>
+            <p style="align-content: center">
+                <a class="btn btn-outline-primary" href="{% url 'graphql_home' %}">CRUD USING GRAPHQL</a> |
+            </p>
+            <p style="align-content: center">
+                <a class="btn btn-outline-primary" href="project/docs/">GRAPHQL API</a> |
+            </p>
+            <p style="align-content: center">
+                <a class="btn btn-outline-primary" href="project/docs/">REST API DOCS</a> |
+            </p>
+            <p style="align-content: center">
+                <a class="btn btn-outline-primary" href="{% url 'openapi-schema' %}">REST API SCHEMA</a>
+            </p>
+        {% else %}
+            <p>
+                <a class="btn btn-outline-primary" href="{% url 'login' %}">Login to View The Entire Home Page</a>
+            </p>
+        {% endif %}
+    </div>
+
+
+{% endblock %}
