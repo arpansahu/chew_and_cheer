@@ -92,11 +92,6 @@ Run Server
 
 ```
 
-## Lessons Learned
-
-What did you learn while building this project? What challenges did you face and how did you overcome them?
-
-
 ## Deployment on Heroku
 
 Installing Heroku Cli from : https://devcenter.heroku.com/articles/heroku-cli
