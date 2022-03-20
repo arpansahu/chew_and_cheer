@@ -197,15 +197,21 @@ Configuring Django App for Heroku
 To run this project, you will need to add the following environment variables to your .env file
 
 SECRET_KEY=
+
 DEBUG=
 
 DB_HOST=
+
 DB_NAME=
+
 DB_USER=
+
 DB_PASSWORD=
+
 DB_PORT=
 
 EMAIL_USER=
+
 EMAIL_PASS=
 
 ALLOWED_HOSTS=
