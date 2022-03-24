@@ -92,44 +92,6 @@ Run Server
 
 ```
 
-## Deployment on Heroku
-
-Installing Heroku Cli from : https://devcenter.heroku.com/articles/heroku-cli
-Create your account in Heroku.
-
-Inside your project directory
-
-Login Heroku CLI
-```bash
-  heroku login
-
-```
-
-Create Heroku App
-
-```bash
-  heroku create [app_name]
-
-```
-
-Push Heroku App
-```
-    git push heroku master
-```
-
-Configure Heroku App
-```bash
-  add all the env variables used from app setting page on heroku app dashboard.
-
-```
-Configuring Django App for Heroku
-```
-    install whitenoise : pip install whitenoise 
-    include it in included_apps=[]
-    add whitenoise middleware
-    add: procfile
-    add: release-task.sh for running mutilple commands in run: section of procfile
-```
 ## Tech Stack
 
 **Client:** HTML, Jinja, CSS, BootStrap, Jquery
