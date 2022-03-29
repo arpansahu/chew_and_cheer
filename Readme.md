@@ -39,6 +39,10 @@ This project is implementation for the following topics related to technologies 
 
 1.Build API for crud using Graphene
 
+-Deployed on Heroku
+
+1. Used Heroku Postgres 
+2. Used AWS S3 Bucket for static and media files
 ## Tech Stack
 
 [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
