@@ -1,5 +1,5 @@
 
-# Django Project
+# Chew and Cheer | Django Project CRUD using AJAX, DJANGO FORMS, GRAPHQL and DJANGO REST/GRAPHQL APIs
 
 This project is implementation for the following topics related to technologies used with Django
 
