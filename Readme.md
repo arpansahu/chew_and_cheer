@@ -42,6 +42,7 @@ This project is implementation for the following topics related to technologies 
 -Deployed on Heroku
 
 1. Used Heroku Postgres 
+2. Used Daphene
 
 ## Tech Stack
 
