@@ -42,7 +42,7 @@ This project is implementation for the following topics related to technologies 
 -Deployed on Heroku
 
 1. Used Heroku Postgres 
-2. Used AWS S3 Bucket for static and media files
+
 ## Tech Stack
 
 [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
@@ -138,14 +138,38 @@ Configure Heroku App
 
 ```
 Configuring Django App for Heroku
+
+Install whitenoise 
 ```
-    install whitenoise : pip install whitenoise 
-    include it in included_apps=[]
-    add whitenoise middleware
-    add: procfile
-    add: release-task.sh for running mutilple commands in run: section of procfile
-    make relase-task.sh executable : chmod +x release-tasks.sh 
+pip install whitenoise 
 ```
+
+Include it in Middlewares.
+```
+MIDDLEWARE = [
+    # ...
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    # ...
+]
+```
+
+Create Procfile and include this code snippet in it.
+```
+release: ./release-tasks.sh
+web: gunicorn djangoProject.wsgi
+```
+
+Crate release-task.sh for running mutilple commands in run: section of procfile
+```
+python manage.py makemigrations
+```
+
+Make relase-task.sh executable
+```
+chmod +x release-tasks.sh 
+```
+
 ## Documentation
 
 [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
