@@ -132,9 +132,9 @@ Push Heroku App
     git push heroku master
 ```
 
-Configure Heroku App
+Configure Heroku App Env Variables
 ```bash
-  add all the env variables used from app setting page on heroku app dashboard.
+  heroku config:set GITHUB_USERNAME=joesmith
 
 ```
 Configuring Django App for Heroku
