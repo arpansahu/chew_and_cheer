@@ -163,6 +163,7 @@ web: gunicorn djangoProject.wsgi
 Crate release-task.sh for running mutilple commands in run: section of procfile
 ```
 python manage.py makemigrations
+python manage.py migrate
 ```
 
 Make relase-task.sh executable
