@@ -160,7 +160,7 @@ release: ./release-tasks.sh
 web: gunicorn djangoProject.wsgi
 ```
 
-Create release-task.sh for running mutilple commands in run: section of procfile
+Create release-task.sh for running multilple commands in run: section of procfile
 ```
 python manage.py makemigrations
 python manage.py migrate
