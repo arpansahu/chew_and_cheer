@@ -158,7 +158,7 @@ MIDDLEWARE = [
 Create Procfile and include this code snippet in it.
 ```
 release: ./release-tasks.sh
-web: gunicorn djangoProject.wsgi
+web: gunicorn chewAndCheer.wsgi
 ```
 
 Create release-task.sh for running multilple commands in run: section of procfile
