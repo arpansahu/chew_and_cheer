@@ -4,7 +4,7 @@ pipeline {
         stage('Dependencies') {
             steps {
                 script {
-                    sh "sudo cp /root/projectenvs/arpansahu_dot_me/.env /var/lib/jenkins/workspace/arpansahu_dot_me"
+                    sh "sudo cp /root/projectenvs/chew_and_cheer/.env /var/lib/jenkins/workspace/chew_and_cheer"
                 }
             }
         }
