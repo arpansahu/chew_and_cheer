@@ -68,7 +68,7 @@ This project is implementation for the following topics related to technologies 
 Available at: https://django-project-api-crud-graphq.herokuapp.com/
 
 admin login details:--
-username: admin
+username: arpansahu
 password: showmecode
 ## License
 
