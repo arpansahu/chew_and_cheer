@@ -218,6 +218,23 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"), ]
 
 run below command ```python manage.py collectstatic```  and you are good to go
 
+## Enabling HSTS if Using EC2 to host with Nginx
+
+# Add to project/settings.py
+```
+SECURE_HSTS_SECONDS = 30  # Unit is seconds; *USE A SMALL VALUE FOR TESTING!*
+SECURE_HSTS_PRELOAD = True
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+```
+
+# Also Set Referrer-policy Header
+Add to project/settings.py
+
+```
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+```
+
 ## Deployment on Heroku
 
 Installing Heroku Cli from : https://devcenter.heroku.com/articles/heroku-cli
@@ -235,7 +252,6 @@ Create Heroku App
 
 ```bash
   heroku create [app_name]
-
 ```
 
 Push Heroku App
@@ -282,30 +298,7 @@ Make relase-task.sh executable
 chmod +x release-tasks.sh 
 ```
 
-## Enabling HSTS if Using EC2 to host with Nginx
 
-# Add to project/settings.py
-```
-SECURE_HSTS_SECONDS = 30  # Unit is seconds; *USE A SMALL VALUE FOR TESTING!*
-SECURE_HSTS_PRELOAD = True
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-```
-# Edit your Nginx Config File
-```
-location / {
-    proxy_pass          http://localhost:8000;
-    proxy_set_header    Host $host;
-    proxy_set_header    X-Forwarded-Proto $scheme;
-}
-```
-
-# Also Set Referrer-policy Header
-Add to project/settings.py
-
-```
-SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
-```
 
 ## Deployment on AWS EC2/ Home Server Ubuntu 22.0 LTS/ Hostinger VPS Server
 Previously This project was hosted on Heroku, but so I started hosting this and all other projects in a 
@@ -1252,19 +1245,25 @@ SECRET_KEY=
 
 DEBUG=
 
-DB_HOST=
+DOMAIN=
 
-DB_NAME=
+PROTOCOL=
 
-DB_USER=
+ALLOWED_HOSTS=*
 
-DB_PASSWORD=
+DATABASE_URL=
 
-DB_PORT=
+REDISCLOUD_URL=
 
-EMAIL_USER=
 
-EMAIL_PASS=
+AWS_ACCESS_KEY_ID=
 
-ALLOWED_HOSTS=
+AWS_SECRET_ACCESS_KEY=
+
+AWS_STORAGE_BUCKET_NAME=
+
+# Blackblaze bucket
+AWS_S3_REGION_NAME=
+
+BUCKET_TYPE=
 
