@@ -41,8 +41,40 @@ This project is implementation for the following topics related to technologies 
 
 -Deployed on Heroku
 
-1. Used Heroku Postgres 
+1. Used Postgres 
 2. Used Daphene
+3. Used REDIS
+
+-Deployed on AWS / Now in My Own Home Ubuntu Server LTS 22.0 / Hostinger VPS Server
+
+1. Used Ubuntu 22.0 LTS
+2. Used Nginx as a Web Proxy Server
+3. Used Let's Encrypt Wildcard certificate 
+4. Used Acme-dns server for automating renewal of wildcard certificates
+5. Used docker to run inside a container since other projects are also running on the same server
+6. Used Jenkins for CI/CD Integration Jenkins Server Running at: https://jenkins.arpansahu.me
+7. Used AWS Elastic Cache for redis which is not accessible outside AWS, Used Redis Server, hosted on Home Server itself as Redis on Home Server
+8. Used PostgresSql Schema based Database, all projects are using single Postgresql. 
+9. PostgresSQL is also hosted on Home Server Itself.
+
+## What is Python ?
+Python is a high-level, general-purpose programming language. Its design philosophy emphasizes code readability with the
+use of significant indentation. Python is dynamically typed and garbage-collected. It supports multiple programming 
+paradigms, including structured, object-oriented and functional programming.
+
+## What is Django ?
+Django is a Python-based free and open-source web framework that follows the model-template-view architectural pattern.
+
+## What is Redis ?
+    
+Redis is an in-memory data structure project implementing a distributed, in-memory key-value database with optional durability. 
+The most common Redis use cases are session cache, full-page cache, queues, leaderboards and counting, publish-subscribe, and much more. in this case, we will use Redis as a message broker.
+
+## What is Ajax ?
+Ajax is a set of web development techniques that uses various web technologies on the client-side to create asynchronous web applications. With Ajax, web applications can send and retrieve data from a server asynchronously without interfering with the display and behaviour of the existing page.
+
+## What is Graphql ?
+GraphQL is a query language for APIs that excels at fetching data from various sources, bundling it together, and returning it to clients. It provides a complete description of API data, allowing clients to request precisely what they need. Unlike traditional REST APIs, GraphQL queries return predictable results, making apps faster and more stable. With GraphQL, developers define a type system for their API, enabling powerful tools and efficient data fetching. It simplifies simultaneous requests to multiple data sources, making it a popular choice worldwide
 
 ## Tech Stack
 
