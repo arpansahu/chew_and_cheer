@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
-from cruddjangoform.models import Item
+from crud_django_form.models import Item
 from django.views.generic import View
 from django.http import JsonResponse
 

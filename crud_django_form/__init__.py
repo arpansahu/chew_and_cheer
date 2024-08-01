@@ -1,0 +1,1 @@
+default_app_config = 'crud_django_form.apps.crud_django_formConfig'

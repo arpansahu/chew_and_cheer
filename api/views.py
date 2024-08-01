@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from rest_framework import serializers
 from rest_framework.serializers import Serializer
-from cruddjangoform.models import Item
+from crud_django_form.models import Item
 from .serializers import ItemSerializer, SingerSerializer, SongSerializer, ItemHyperLinkedSerializer, \
     SingerSerializerNested
 from rest_framework.renderers import JSONRenderer

@@ -2,9 +2,9 @@ import graphene
 from graphene_django import DjangoObjectType, DjangoListField
 from graphql_auth import mutations, relay
 
-from cruddjangoform.models import Item
+from crud_django_form.models import Item
 
-from graphqlapp.models import Category, Quizzes, Question, Answer
+from graph_ql_app.models import Category, Quizzes, Question, Answer
 from graphql_auth.schema import UserQuery, MeQuery
 
 

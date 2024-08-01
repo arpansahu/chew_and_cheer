@@ -1,4 +1,4 @@
-"""chewAndCheer URL Configuration
+"""chew_and_cheer URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.1/topics/http/urls/
@@ -29,15 +29,15 @@ from .views import (
 
 urlpatterns = [
 
-    path('graphql/', include('graphqlapp.urls')),
+    path('graphql/', include('graph_ql_app.urls')),
 
     path('admin/', admin.site.urls),
 
     # path('', home, name="home"),
     path('', HomeClassView.as_view(), name="home"),
 
-    path('crud_django_forms/', include('cruddjangoform.urls')),
-    path('crud_ajax_class/', include('crudajax.urls')),
+    path('crud_django_forms/', include('crud_django_form.urls')),
+    path('crud_ajax_class/', include('crud_ajax.urls')),
 
     path('api/v0/', include('api.urls')),
     # API schema and Documentation

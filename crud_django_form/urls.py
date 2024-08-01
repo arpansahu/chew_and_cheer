@@ -1,6 +1,6 @@
 from django.urls import path
 
-from cruddjangoform.views import (
+from crud_django_form.views import (
     home_views,
     delete_item,
     update_item,

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from cruddjangoform.models import Item
+from crud_django_form.models import Item
 
 
 # Register your models here.

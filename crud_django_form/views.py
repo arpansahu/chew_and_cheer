@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.views.generic.base import View
 
 from .forms import ItemCreation
-from cruddjangoform.models import Item
+from crud_django_form.models import Item
 from django.core.paginator import Paginator, EmptyPage
 
 

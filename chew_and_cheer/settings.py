@@ -36,15 +36,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'modelling',
-    'cruddjangoform',
+    'crud_django_form',
     'account',
-    'crudajax',
+    'crud_ajax',
     'rest_framework',
     'api',
     'rest_framework.authtoken',
     'django_filters',
     'graphene_django',
-    'graphqlapp',
+    'graph_ql_app',
     'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
     'graphql_auth',
     # 'channels',
@@ -62,7 +62,7 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
-ROOT_URLCONF = 'chewAndCheer.urls'
+ROOT_URLCONF = 'chew_and_cheer.urls'
 
 TEMPLATES = [
     {
@@ -84,7 +84,7 @@ TEMPLATES = [
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-WSGI_APPLICATION = 'chewAndCheer.wsgi.application'
+WSGI_APPLICATION = 'chew_and_cheer.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -196,7 +196,7 @@ REST_FRAMEWORK = {
 
 # GraphQl
 # GRAPHENE = {
-#     "SCHEMA": "graphqlapp.schema.schema"
+#     "SCHEMA": "graph_ql_app.schema.schema"
 # }
 
 GRAPHENE = {
@@ -261,14 +261,14 @@ if not DEBUG:
         # s3 static settings
         AWS_STATIC_LOCATION = 'portfolio/chew_and_cheer/static'
         STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_STATIC_LOCATION}/'
-        STATICFILES_STORAGE = 'chewAndCheer.storage_backends.StaticStorage'
+        STATICFILES_STORAGE = 'chew_and_cheer.storage_backends.StaticStorage'
         # s3 public media settings
         AWS_PUBLIC_MEDIA_LOCATION = 'portfolio/chew_and_cheer/media'
         MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_PUBLIC_MEDIA_LOCATION}/'
-        DEFAULT_FILE_STORAGE = 'chewAndCheer.storage_backends.PublicMediaStorage'
+        DEFAULT_FILE_STORAGE = 'chew_and_cheer.storage_backends.PublicMediaStorage'
         # s3 private media settings
         PRIVATE_MEDIA_LOCATION = 'portfolio/chew_and_cheer/private'
-        PRIVATE_FILE_STORAGE = 'chewAndCheer.storage_backends.PrivateMediaStorage'
+        PRIVATE_FILE_STORAGE = 'chew_and_cheer.storage_backends.PrivateMediaStorage'
 
     elif BUCKET_TYPE == 'BLACKBLAZE':
 
@@ -293,14 +293,14 @@ if not DEBUG:
         # s3 static settings
         AWS_STATIC_LOCATION = 'portfolio/chew_and_cheer/static'
         STATIC_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.{AWS_STATIC_LOCATION}/'
-        STATICFILES_STORAGE = 'chewAndCheer.storage_backends.StaticStorage'
+        STATICFILES_STORAGE = 'chew_and_cheer.storage_backends.StaticStorage'
         # s3 public media settings
         AWS_PUBLIC_MEDIA_LOCATION = 'portfolio/chew_and_cheer/media'
         MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.{AWS_PUBLIC_MEDIA_LOCATION}/'
-        DEFAULT_FILE_STORAGE = 'chewAndCheer.storage_backends.PublicMediaStorage'
+        DEFAULT_FILE_STORAGE = 'chew_and_cheer.storage_backends.PublicMediaStorage'
         # s3 private media settings
         PRIVATE_MEDIA_LOCATION = 'portfolio/chew_and_cheer/private'
-        PRIVATE_FILE_STORAGE = 'chewAndCheer.storage_backends.PrivateMediaStorage'
+        PRIVATE_FILE_STORAGE = 'chew_and_cheer.storage_backends.PrivateMediaStorage'
 
 
 else:

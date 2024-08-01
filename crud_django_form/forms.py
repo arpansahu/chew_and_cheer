@@ -1,5 +1,5 @@
 from django import forms
-from cruddjangoform.models import Item
+from crud_django_form.models import Item
 
 
 class ItemCreation(forms.ModelForm):

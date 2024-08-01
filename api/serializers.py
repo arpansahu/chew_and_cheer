@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from cruddjangoform.models import Item
+from crud_django_form.models import Item
 from .models import Singer, Song
 
 

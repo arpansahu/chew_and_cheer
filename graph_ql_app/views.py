@@ -7,8 +7,8 @@ from django.utils.decorators import method_decorator
 from rest_framework import serializers
 from rest_framework.renderers import JSONRenderer
 
-from cruddjangoform.forms import ItemCreation
-from cruddjangoform.models import Item
+from crud_django_form.forms import ItemCreation
+from crud_django_form.models import Item
 from .models import Quizzes
 
 from .schema import schema, Query2
