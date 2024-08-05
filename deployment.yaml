@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chew-and-cheer-app
+  labels:
+    app: chew-and-cheer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chew-and-cheer
+  template:
+    metadata:
+      labels:
+        app: chew-and-cheer
+    spec:
+      imagePullSecrets:
+        - name: harbor-registry-secret
+      containers:
+        - image: harbor.arpansahu.me/library/chew_and_cheer:latest
+          name: chew-and-cheer
+          env:
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: chew-and-cheer-secret
+                  key: SECRET_KEY
+            - name: DEBUG
+              valueFrom:
+                secretKeyRef:
+                  name: chew-and-cheer-secret
+                  key: DEBUG
+            - name: ALLOWED_HOSTS
+              valueFrom:
+                secretKeyRef:
+                  name: chew-and-cheer-secret
+                  key: ALLOWED_HOSTS
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: chew-and-cheer-secret
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: chew-and-cheer-secret
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: AWS_STORAGE_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: chew-and-cheer-secret
+                  key: AWS_STORAGE_BUCKET_NAME
+            - name: BUCKET_TYPE
+              valueFrom:
+                secretKeyRef:
+                  name: chew-and-cheer-secret
+                  key: BUCKET_TYPE
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: chew-and-cheer-secret
+                  key: DATABASE_URL
+            - name: REDISCLOUD_URL
+              valueFrom:
+                secretKeyRef:
+                  name: chew-and-cheer-secret
+                  key: REDISCLOUD_URL
+            - name: MAIL_JET_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: chew-and-cheer-secret
+                  key: MAIL_JET_API_KEY
+            - name: MAIL_JET_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: chew-and-cheer-secret
+                  key: MAIL_JET_API_SECRET
+            - name: MAIL_JET_EMAIL_ADDRESS
+              valueFrom:
+                secretKeyRef:
+                  name: chew-and-cheer-secret
+                  key: MAIL_JET_EMAIL_ADDRESS
+          ports:
+            - containerPort: 8001
+              name: gunicorn

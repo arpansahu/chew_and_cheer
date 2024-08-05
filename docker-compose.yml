@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    env_file: ./.env
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && gunicorn --bind 0.0.0.0:8001 chew_and_cheer.wsgi"
+    image: chew_and_cheer
+    container_name: chew_and_cheer
+    volumes:
+      - .:/chew_and_cheer
+    ports:
+      - "8001:8001"
+    restart: unless-stopped
