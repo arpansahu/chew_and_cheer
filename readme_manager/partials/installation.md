@@ -41,7 +41,7 @@ Run Server
 
   or 
 
-  gunicorn --bind 0.0.0.0:8001 chew_and_cheer.wsgi
+  gunicorn --bind 0.0.0.0:[PROJECT_DOCKER_PORT] [JENKINS PROJECT NAME].wsgi
 ```
 
 Use these CACHE settings
