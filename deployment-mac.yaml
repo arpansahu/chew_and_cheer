@@ -19,7 +19,7 @@ spec:
       containers:
         - image: harbor.arpansahu.me/library/chew_and_cheer_mac:latest
           imagePullPolicy: Always
-          name: chew_and_cheer_mac
+          name: chew-and-cheer-mac
           env:
             - name: SECRET_KEY
               valueFrom:
