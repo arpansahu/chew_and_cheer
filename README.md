@@ -1512,7 +1512,7 @@ spec:
         - name: harbor-registry-secret
       containers:
         - image: harbor.arpansahu.me/library/chew_and_cheer:latest
-          name: chew-and-cheer
+          name: chew_and_cheer
           env:
             - name: SECRET_KEY
               valueFrom:
@@ -2732,7 +2732,7 @@ pipeline {
                             """
                             
                             // Wait for a few seconds to let the app start
-                            sleep 20
+                            sleep 60
 
                             // Check deployment status
                             sh """
