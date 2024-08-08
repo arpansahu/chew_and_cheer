@@ -87,8 +87,8 @@ function set_default_variables {
 
 # Function to set mac specific variables
 function set_mac_variables {
-    IMAGE_NAME="chew_and_chew_mac"
-    KUBE_DEPLOYMENT="chew-and-cheer-app-mac"
+    IMAGE_NAME="chew_and_cheer_mac"
+    KUBE_DEPLOYMENT="chew-and-cheer-mac-app"
     DEPLOYMENT_FILE="deployment-mac.yaml"
 }
 
