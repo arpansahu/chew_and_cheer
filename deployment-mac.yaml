@@ -1,25 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: chew-and-cheer-app-mac
+  name: chew-and-cheer-mac-app
   labels:
-    app: chew-and-cheer
+    app: chew-and-cheer-mac
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: chew-and-cheer
+      app: chew-and-cheer-mac
   template:
     metadata:
       labels:
-        app: chew-and-cheer
+        app: chew-and-cheer-mac
     spec:
       imagePullSecrets:
         - name: harbor-registry-secret
       containers:
         - image: harbor.arpansahu.me/library/chew_and_cheer_mac:latest
           imagePullPolicy: Always
-          name: chew-and-cheer
+          name: chew_and_cheer_mac
           env:
             - name: SECRET_KEY
               valueFrom:
