@@ -360,12 +360,19 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 
 #Caching
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': config('REDISCLOUD_URL'),
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+#Caching
+if not DEBUG:
+    CHANNEL_LAYERS = {
+        'default': {
+            "BACKEND": "channels.layers.InMemoryChannelLayer",
         }
     }
-}
+else:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [(config('REDISCLOUD_URL'))],
+            },
+        },
+    }
