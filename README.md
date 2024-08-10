@@ -110,8 +110,6 @@ A web development technique that enables asynchronous data exchange between a we
 [![Mail Jet](https://img.shields.io/badge/MAILJET-9933CC?style=for-the-badge&logo=minutemailer&logoColor=white)](https://mailjet.com/)
 [![GraphQL](https://img.shields.io/badge/-GraphQL-E10098?style=for-the-badge&logo=graphql&logoColor=white)](https://graphql.org/)
 
-
-
 ## Demo
 
 Available at: https://chew-and-cheer.arpansahu.me
@@ -4248,8 +4246,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 [![Mail Jet](https://img.shields.io/badge/MAILJET-9933CC?style=for-the-badge&logo=minutemailer&logoColor=white)](https://mailjet.com/)
 [![GraphQL](https://img.shields.io/badge/-GraphQL-E10098?style=for-the-badge&logo=graphql&logoColor=white)](https://graphql.org/)
 
-
-
 ## Environment Variables
 
 To run this project, you will need to add the following environment variables to your .env file
@@ -4277,7 +4273,7 @@ DATABASE_URL=
 
 REDISCLOUD_URL=
 
-# deploy_kube.sh requiurements
+# deploy_kube.sh requirements
 HARBOR_USERNAME=
 
 HARBOR_PASSWORD=
