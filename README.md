@@ -1534,7 +1534,7 @@ spec:
           name: chew-and-cheer
           envFrom:
             - secretRef:
-                name: arpansahu-dot-me-secret
+                name: chew-and-cheer-secret
           ports:
             - containerPort: 8001
               name: gunicorn
@@ -2568,10 +2568,10 @@ pipeline {
         DOCKER_PORT = "8001"
         PROJECT_NAME_WITH_DASH = "chew-and-cheer"
         SERVER_NAME= "chew-and-cheer.arpansahu.me"
-        BUILD_PROJECT_NAME = "arpansahu_dot_me_build"
+        BUILD_PROJECT_NAME = "chew_and_cheer_build"
         JENKINS_DOMAIN = "jenkins.arpansahu.me"
         SENTRY_ORG="arpansahu"
-        SENTRY_PROJECT="arpansahu_dot_me"
+        SENTRY_PROJECT="chew_and_cheer"
     }
     stages {
         stage('Initialize') {
