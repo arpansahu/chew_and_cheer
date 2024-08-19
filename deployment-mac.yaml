@@ -21,7 +21,7 @@ spec:
           name: chew-and-cheer-mac
           envFrom:
             - secretRef:
-                name: arpansahu-dot-me-secret
+                name: chew-and-cheer-secret
           ports:
             - containerPort: 8001
               name: gunicorn
