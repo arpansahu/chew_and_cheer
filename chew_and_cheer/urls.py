@@ -27,6 +27,13 @@ from .views import (
 
 )
 
+def trigger_error(request):
+    division_by_zero = 1 / 0
+
+def large_resource(request):
+   time.sleep(4)
+   return HttpResponse("Done!")
+
 urlpatterns = [
 
     path('graphql/', include('graph_ql_app.urls')),
@@ -50,6 +57,10 @@ urlpatterns = [
     ), name='openapi-schema'),
 
     path('accounts/', include('account.urls')),
+         
+    #sentry test view 
+    path('sentry-debug/', trigger_error),
+    path('large_resource/', large_resource)
 ]
 
 handler404 = 'account.views.error_404'
