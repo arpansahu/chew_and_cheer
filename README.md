@@ -1073,13 +1073,15 @@ version: '3'
 
 services:
   web:
-    build: .
+    build:  # This section will be used when running locally
+      context: .
+      dockerfile: Dockerfile
+    image: harbor.arpansahu.me/library/chew_and_cheer:latest
     env_file: ./.env
     command: bash -c "python manage.py makemigrations && python manage.py migrate && gunicorn --bind 0.0.0.0:8001 chew_and_cheer.wsgi"
-    image: chew_and_cheer
     container_name: chew_and_cheer
     volumes:
-      - .:/chew_and_cheer
+      - .:/app
     ports:
       - "8001:8001"
     restart: unless-stopped
@@ -2676,6 +2678,7 @@ pipeline {
                         '''
                         // Deploy using Docker Compose
                         sh 'docker-compose down'
+                        sh 'docker-compose pull'
                         sh 'docker-compose up -d'
 
                         // Wait for a few seconds to let the app start
