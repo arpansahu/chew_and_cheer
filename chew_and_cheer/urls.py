@@ -19,6 +19,8 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from rest_framework.documentation import include_docs_urls
 from rest_framework.schemas import get_schema_view
+from django.conf import settings
+from django.conf.urls.static import static
 
 auth_views.LoginView
 from .views import (
@@ -62,6 +64,10 @@ urlpatterns = [
     path('sentry-debug/', trigger_error),
     path('large_resource/', large_resource)
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 
 handler404 = 'account.views.error_404'
 handler500 = 'account.views.error_500'

@@ -70,8 +70,6 @@ INSTALLED_APPS = [
     'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
     'graphql_auth',
     'check_service_health',
-    # 'channels',
-    # 'graphene_subscriptions',
 ]
 
 MIDDLEWARE = [
@@ -341,8 +339,8 @@ if not DEBUG:
         DEFAULT_FILE_STORAGE = f'{PROJECT_NAME}.storage_backends.PublicMediaStorage'
 
         # s3 private media settings
-        PRIVATE_MEDIA_LOCATION = 'portfolio/borcelle_crm/private'
-        PRIVATE_FILE_STORAGE = 'borcelle_crm.storage_backends.PrivateMediaStorage'
+        PRIVATE_MEDIA_LOCATION = f'portfolio/{PROJECT_NAME}/private'
+        PRIVATE_FILE_STORAGE = f'{PROJECT_NAME}.storage_backends.PrivateMediaStorage'
 else:
     # Static files (CSS, JavaScript, Images)
     # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -366,24 +364,17 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 
 #Caching
-if not DEBUG:
-    CACHES = {
-        'default': {
-            'BACKEND': 'django_redis.cache.RedisCache',
-            'LOCATION': REDIS_CLOUD_URL,
-            'OPTIONS': {
-                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            },
-            'KEY_PREFIX': PROJECT_NAME
-        }
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': REDIS_CLOUD_URL,
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        },
+        'KEY_PREFIX': PROJECT_NAME
     }
-else:
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-            'LOCATION': 'unique-snowflake',
-        }
-    }
+}
 
 # Get the current git commit hash
 def get_git_commit_hash():
@@ -398,19 +389,19 @@ sentry_sdk.init(
             DjangoIntegration(
                 transaction_style='url',
                 middleware_spans=True,
-                signals_spans=True,
-                signals_denylist=[
-                    django.db.models.signals.pre_init,
-                    django.db.models.signals.post_init,
-                ],
-                cache_spans=False,
+                # signals_spans=True,
+                # signals_denylist=[
+                #     django.db.models.signals.pre_init,
+                #     django.db.models.signals.post_init,
+                # ],
+                # cache_spans=False,
             ),
         ],
     traces_sample_rate=1.0,  # Adjust this according to your needs
     send_default_pii=True,  # To capture personal identifiable information (optional)
     release=get_git_commit_hash(),  # Set the release to the current git commit hash
     environment=SENTRY_ENVIRONMENT,  # Or "staging", "development", etc.
-    profiles_sample_rate=1.0,
+    # profiles_sample_rate=1.0,
 )
 
 LOGGING = {
