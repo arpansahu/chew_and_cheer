@@ -2768,9 +2768,13 @@ pipeline {
                             // Wait for a few seconds to let the app start
                             sleep 60
 
-                            // Check deployment status
+                            // // Check deployment status
+                            // sh """
+                            // kubectl rollout status deployment/${PROJECT_NAME_WITH_DASH}-app
+                            // """
+
                             sh """
-                            kubectl rollout status deployment/${PROJECT_NAME_WITH_DASH}-app
+                                kubectl describe deployment/${PROJECT_NAME_WITH_DASH}-app
                             """
                             
                             // Verify service and get NodePort
