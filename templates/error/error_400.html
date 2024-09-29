@@ -1,13 +1,73 @@
 {% extends 'base.html' %}
 {% load static %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<style>
+  .oblique-bg {
+    background-image: url("{% static 'assets/img/curved6.jpg' %}");
+    background-size: cover;
+    background-position: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    z-index: 0;
+    margin-left: -6rem; /* ms-n6 */
+  }
+
+  /* Full viewport height and center content */
+  .page-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Make sure it takes the entire viewport height */
+  }
+
+  /* Wider card */
+  .card-plain {
+    width: 100%;
+    max-width: 800px; /* Adjust the max-width to make it wider */
+  }
+
+  /* Adjusting container for full width */
+  .container {
+    max-width: 1200px;
+  }
+
+</style>
+{% endblock stylesheets %}
+
 {% block content %}
-
-    <h1 style="text-align:center;padding-left: 100px" >404 PAGE NOT FOUND</h1>
-    <div class="row" style="padding: 100px" >
-
-            ERROR 400
-
+<section>
+  <div class="page-header section-height-75">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-xl-8 col-lg-9 col-md-10 d-flex flex-column"> <!-- Adjusted column widths for wider display -->
+          <div class="card card-plain mt-8">
+            <div class="card-header pb-0 text-left bg-transparent">
+              <h3 class="font-weight-bolder text-danger text-gradient">
+                Error 400
+              </h3>
+              <p class="mb-0 text-danger">
+                Bad Request - If the problem persists, please contact support.
+              </p>
+            </div>
+            <div class="card-body">
+              <div class="text-center">
+                <a type="button" href="/" class="btn bg-gradient-info w-100 mt-4 mb-0">HOME</a>
+              </div>
+            </div>
+            <div class="card-footer text-center pt-0 px-lg-2 px-1">
+              <p class="mb-4 text-sm mx-auto">
+                <a href="https://arpansahu.me/contact/" class="text-info text-gradient font-weight-bold">Contact Support</a>             
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-
-
+  </div>
+  <div class="oblique-bg"></div>
+</section>
 {% endblock %}
