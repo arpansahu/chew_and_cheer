@@ -2,63 +2,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
     <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.js' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}"/>
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+
     <title>CHEW and CHEER</title>
 
     {% include 'snippets/header.html' %}
 
-    <script
-    src="https://js.sentry-cdn.com/6a37084980bd1a6482791839caa28310.min.js"
-    crossorigin="anonymous"
-    ></script>
+    <script src="https://js.sentry-cdn.com/6a37084980bd1a6482791839caa28310.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <!--Body-->
-    <style type="text/css">
-        .main{
-            min-height: 100vh;
+    <style>
+        .main {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 80vh; /* Adjusted height */
+            padding: 0;
+            margin: 0;
         }
-
+    
+        footer {
+            padding: 10px 0;
+            margin-top: 0;
+        }
     </style>
+
     <div class="main">
-
-
-            {% block content %}
-
-
-            {% endblock %}
-
-
+        {% block content %}
+        {% endblock %}
     </div>
 
-
-
     {% block javascript %}
+    {% endblock javascript %}
 
-    {% endblock javascript%}
-    <!--End Body -->
-
-
+    <footer>
+        {% include 'snippets/footer.html' %}
+    </footer>
 </body>
-
-                <footer style="
-                    position: relative;
-                    display: flex;
-                    justify-content: center;
-                    -webkit-touch-callout: none;
-                    -webkit-user-select: none;
-                    -moz-user-select: none;
-                    -ms-user-select: none;
-                    user-select: none;
-                    padding: 20px 15px;
-                    width: 100%;
-                    margin-top: 100px">
-                     {% include 'snippets/footer.html' %}
-                </footer>
-
 </html>

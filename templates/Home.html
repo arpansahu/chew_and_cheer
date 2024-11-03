@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 
-    <div class="row " style="padding: 100px" >
+    <div class="row" style="padding: 20px;"> <!-- Adjusted padding -->
         {% if request.user.is_authenticated %}
             <p style="align-content: center">
                 <a class="btn btn-outline-primary" href="{% url 'crudformhome' %}">CRUD USING DJANGO FORMS</a> |
@@ -28,6 +28,5 @@
             </p>
         {% endif %}
     </div>
-
 
 {% endblock %}

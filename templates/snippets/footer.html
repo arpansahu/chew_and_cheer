@@ -1,18 +1,74 @@
 {% load static %}
-
 <style>
-        .container {
-            object-position: bottom;
-          width: auto;
-          max-width: 680px;
-          padding: 0 15px;
+    .footer-container {
+        width: 100%;
+        background-color: #f8f9fa;
+        text-align: center;
+        padding: 10px 15px;
+        box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+    }
 
-        }
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
 
+    .footer-content h6 {
+        font-size: 14px;
+        color: #6c757d;
+        margin: 0;
+    }
+
+    .footer-content .nav-footer {
+        list-style: none;
+        display: flex;
+        gap: 15px;
+        padding: 0;
+        margin: 0;
+    }
+
+    .footer-content .btn-social {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 10px;
+        font-size: 14px;
+        color: #6c757d;
+        text-decoration: none;
+    }
+
+    .footer-content .btn-social .fa {
+        margin-right: 8px;
+    }
 </style>
 
-<div class="container">
-    <span class="text-muted" >
-        <h6>© CHEW and CHEER LLP, Inc. All rights reserved.</h6>
-    </span>
+<div class="footer-container">
+    <div class="footer-content">
+        <h6>© CHEW and CHEER LLP, Inc. All rights reserved. | <a href="https://arpansahu.me" class="font-weight-bold" target="_blank">arpansahu.me</a></h6>
+
+        <ul class="nav-footer">
+            <li class="nav-item">
+                <a class="btn btn-social btn-github" href="https://github.com/arpansahu/chew_and_cheer" target="_blank">
+                    <span class="fa fa-github"></span> Clone This Repo
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="btn btn-social btn-github" href="https://github.com/arpansahu" target="_blank">
+                    <span class="fa fa-github"></span> Follow on GitHub
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="btn btn-social" href="https://arpansahu.me" target="_blank">
+                    <span class="fa"><img src="{% static 'arpansahu-footer.png' %}" width="13" height="13" alt="Portfolio"></span> Portfolio
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="btn btn-social btn-linkedin" href="https://www.linkedin.com/in/arpansahu" target="_blank">
+                    <span class="fa fa-linkedin"></span> Follow on LinkedIn
+                </a>
+            </li>
+        </ul>
+    </div>
 </div>
