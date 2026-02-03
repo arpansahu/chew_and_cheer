@@ -17,7 +17,7 @@ spec:
       imagePullSecrets:
         - name: harbor-registry-secret
       containers:
-        - image: harbor.arpansahu.me/library/chew_and_cheer:latest
+        - image: harbor.arpansahu.space/library/chew_and_cheer:latest
           name: chew-and-cheer
           envFrom:
             - secretRef:
