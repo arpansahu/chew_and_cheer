@@ -39,12 +39,13 @@ pipeline {
                 script {
                     echo 'Running Django Unit Tests...'
                     
-                    // Run unit tests in Docker container
+                    // Run unit tests in Docker container with test settings
                     sh """
                     docker run --rm \
                         -v \$(pwd):/app \
                         -w /app \
                         --env-file .env \
+                        -e DJANGO_SETTINGS_MODULE=chew_and_cheer.test_settings \
                         python:3.10.7 \
                         bash -c 'pip install -q -r requirements.txt && \
                                  pip install -q pytest pytest-django pytest-asyncio channels pytest-cov && \
