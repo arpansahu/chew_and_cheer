@@ -1,5 +1,14 @@
 pipeline {
     agent any
+    
+    parameters {
+        booleanParam(
+            name: 'RUN_TESTS',
+            defaultValue: false,
+            description: 'Run unit and UI tests before building the image. Set to false to skip tests and build faster.'
+        )
+    }
+    
     environment {
         REGISTRY = "harbor.arpansahu.space"
         REPOSITORY = "library/chew_and_cheer"
@@ -15,9 +24,70 @@ pipeline {
         stage('Setup Environment') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'chew_and_cheer_env_file', variable: 'ENV_CONTENT')]) {
-                        writeFile file: '.env', text: env.ENV_CONTENT
+                    withCredentials([file(credentialsId: 'chew_and_cheer_env', variable: 'ENV_FILE')]) {
+                        sh "cp \$ENV_FILE .env"
                         echo '.env file created successfully from credentials'
+                    }
+                }
+            }
+        }
+        stage('Run Tests') {
+            when {
+                expression { params.RUN_TESTS == true }
+            }
+            steps {
+                script {
+                    echo 'Running Django Unit Tests...'
+                    
+                    // Run unit tests in Docker container
+                    sh """
+                    docker run --rm \
+                        -v \$(pwd):/app \
+                        -w /app \
+                        --env-file .env \
+                        python:3.10.7 \
+                        bash -c 'pip install -q -r requirements.txt && \
+                                 python manage.py test --verbosity=2 --failfast'
+                    """
+                    
+                    echo '✅ All unit tests passed successfully!'
+                }
+            }
+        }
+        stage('Service Health Check') {
+            when {
+                expression { params.RUN_TESTS == true }
+            }
+            steps {
+                script {
+                    echo 'Running Service Health Checks...'
+                    
+                    // Run service health checks in Docker container
+                    sh """
+                    docker run --rm \
+                        -v \$(pwd):/app \
+                        -w /app \
+                        --env-file .env \
+                        python:3.10.7 \
+                        bash -c 'pip install -q -r requirements.txt && \
+                                 python manage.py test_db && \
+                                 python manage.py test_cache && \
+                                 python manage.py test_storage && \
+                                 python manage.py test_email --detailed'
+                    """
+                    
+                    echo '✅ All service health checks passed!'
+                }
+            }
+        }
+        stage('Tests Status') {
+            steps {
+                script {
+                    if (params.RUN_TESTS) {
+                        echo '✅ Tests were executed in previous stages'
+                    } else {
+                        echo '⚠️  Tests skipped - RUN_TESTS parameter is set to false'
+                        echo '💡 To run tests, set RUN_TESTS=true when triggering the build'
                     }
                 }
             }

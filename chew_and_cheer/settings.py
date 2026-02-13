@@ -46,6 +46,7 @@ SENTRY_ENVIRONMENT = config('SENTRY_ENVIRONMENT')  # production Or "staging", "d
 SENTRY_DSH_URL = config('SENTRY_DSH_URL')
 
 PROJECT_NAME = 'chew_and_cheer'
+USE_S3 = config('USE_S3', default=True, cast=bool)
 # ===============================================================================
 
 # Application definition
@@ -263,92 +264,81 @@ LOGOUT_URL = 'accounts/logout'
 
 # Static files (CSS, JavaScript, Images)
 
-if not DEBUG:
-    if BUCKET_TYPE == 'AWS':
-        AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
-        AWS_DEFAULT_ACL = 'public-read'
-        AWS_S3_OBJECT_PARAMETERS = {
-            'CacheControl': 'max-age=86400'
-        }
-        AWS_LOCATION = 'static'
-        AWS_QUERYSTRING_AUTH = False
-        AWS_HEADERS = {
-            'Access-Control-Allow-Origin': '*',
-        }
-        # s3 static settings
-        AWS_STATIC_LOCATION = f'portfolio/{PROJECT_NAME}/static'
-        STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_STATIC_LOCATION}/'
-        STATICFILES_STORAGE = f'{PROJECT_NAME}.storage_backends.StaticStorage'
-        # s3 public media settings
-        AWS_PUBLIC_MEDIA_LOCATION = f'portfolio/{PROJECT_NAME}/media'
-        MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_PUBLIC_MEDIA_LOCATION}/'
-        DEFAULT_FILE_STORAGE = f'{PROJECT_NAME}.storage_backends.PublicMediaStorage'
-        # s3 private media settings
-        PRIVATE_MEDIA_LOCATION = f'portfolio/{PROJECT_NAME}/private'
-        PRIVATE_FILE_STORAGE = f'{PROJECT_NAME}.storage_backends.PrivateMediaStorage'
-
-    elif BUCKET_TYPE == 'BLACKBLAZE':
-        AWS_S3_REGION_NAME = 'us-east-005'
-
-        AWS_S3_ENDPOINT = f's3.{AWS_S3_REGION_NAME}.backblazeb2.com'
-        AWS_S3_ENDPOINT_URL = f'https://{AWS_S3_ENDPOINT}'
-        
-        AWS_DEFAULT_ACL = 'public-read'
-        AWS_S3_OBJECT_PARAMETERS = {
-            'CacheControl': 'max-age=86400',
-        }
-
-        AWS_LOCATION = 'static'
-        AWS_QUERYSTRING_AUTH = False
-        AWS_HEADERS = {
-            'Access-Control-Allow-Origin': '*',
-        }
-        # s3 static settings
-        AWS_STATIC_LOCATION = f'portfolio/{PROJECT_NAME}/static'
-        STATIC_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.{AWS_STATIC_LOCATION}/'
-        STATICFILES_STORAGE = f'{PROJECT_NAME}.storage_backends.StaticStorage'
-        # s3 public media settings
-        AWS_PUBLIC_MEDIA_LOCATION = f'portfolio/{PROJECT_NAME}/media'
-        MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.{AWS_PUBLIC_MEDIA_LOCATION}/'
-        DEFAULT_FILE_STORAGE = f'{PROJECT_NAME}.storage_backends.PublicMediaStorage'
-        # s3 private media settings
-        PRIVATE_MEDIA_LOCATION = f'portfolio/{PROJECT_NAME}/private'
-        PRIVATE_FILE_STORAGE = f'{PROJECT_NAME}.storage_backends.PrivateMediaStorage'
-
-    elif BUCKET_TYPE == 'MINIO':
-        AWS_S3_REGION_NAME = 'us-east-1'  # MinIO doesn't require this, but boto3 does
-        AWS_S3_ENDPOINT_URL = 'https://minio.arpansahu.me'
-        AWS_DEFAULT_ACL = 'public-read'
-        AWS_S3_OBJECT_PARAMETERS = {
-            'CacheControl': 'max-age=86400',
-        }
-        AWS_LOCATION = 'static'
-        AWS_QUERYSTRING_AUTH = False
-        AWS_HEADERS = {
-            'Access-Control-Allow-Origin': '*',
-        }
-
-        # s3 static settings
-        AWS_STATIC_LOCATION = f'portfolio/{PROJECT_NAME}/static'
-        STATIC_URL = f'https://{AWS_STORAGE_BUCKET_NAME}/{AWS_STATIC_LOCATION}/'
-        STATICFILES_STORAGE = f'{PROJECT_NAME}.storage_backends.StaticStorage'
-
-        # s3 public media settings
-        AWS_PUBLIC_MEDIA_LOCATION = f'portfolio/{PROJECT_NAME}/media'
-        MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}/{AWS_PUBLIC_MEDIA_LOCATION}/'
-        DEFAULT_FILE_STORAGE = f'{PROJECT_NAME}.storage_backends.PublicMediaStorage'
-
-        # s3 private media settings
-        PRIVATE_MEDIA_LOCATION = f'portfolio/{PROJECT_NAME}/private'
-        PRIVATE_FILE_STORAGE = f'{PROJECT_NAME}.storage_backends.PrivateMediaStorage'
-else:
-    # Static files (CSS, JavaScript, Images)
-    # https://docs.djangoproject.com/en/3.2/howto/static-files/
-
+if not USE_S3:
     STATIC_URL = '/static/'
-
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     MEDIA_URL = '/media/'
+else:
+    AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME', default='eu-north-1')
+    
+    AWS_S3_FILE_OVERWRITE = False  # Prevent overwriting files with the same name
+    AWS_DEFAULT_ACL = None  # Ensure files are not public by default
+
+    # Switch between MinIO and AWS S3
+    if BUCKET_TYPE == 'MINIO':
+        # MinIO/S3 Configuration
+        AWS_QUERYSTRING_AUTH = False  # Don't add query parameters to URLs (use bucket policy instead)
+        AWS_S3_SIGNATURE_VERSION = 's3v4'
+        AWS_S3_USE_SSL = True
+        AWS_S3_VERIFY = True
+        AWS_S3_ADDRESSING_STYLE = 'path'  # Use path-style addressing for MinIO
+        
+        # MinIO API endpoint through nginx proxy
+        AWS_S3_ENDPOINT_URL = 'https://minioapi.arpansahu.space'
+        
+        # Custom domain for serving files
+        AWS_S3_CUSTOM_DOMAIN = f'minioapi.arpansahu.space/{AWS_STORAGE_BUCKET_NAME}'
+    elif BUCKET_TYPE == 'AWS':
+        AWS_S3_ENDPOINT_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+        AWS_S3_CUSTOM_DOMAIN = AWS_S3_ENDPOINT_URL
+
+    # Static and Media File Storage Settings
+    AWS_STATIC_LOCATION = f'portfolio/{PROJECT_NAME}/static'
+    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_STATIC_LOCATION}/'
+    
+    AWS_PUBLIC_MEDIA_LOCATION = f'portfolio/{PROJECT_NAME}/media'
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_PUBLIC_MEDIA_LOCATION}/'
+    
+    AWS_PROTECTED_MEDIA_LOCATION = f'portfolio/{PROJECT_NAME}/protected'
+    AWS_PRIVATE_MEDIA_LOCATION = f'portfolio/{PROJECT_NAME}/private'
+
+    # Use custom storage classes with STORAGES dict (Django 4.2+)
+    STORAGES = {
+        'default': {
+            'BACKEND': f'{PROJECT_NAME}.storage_backends.PublicMediaStorage',
+            'OPTIONS': {
+                'location': AWS_PUBLIC_MEDIA_LOCATION,
+                'bucket_name': AWS_STORAGE_BUCKET_NAME,
+                'endpoint_url': AWS_S3_ENDPOINT_URL,
+                'access_key': AWS_ACCESS_KEY_ID,
+                'secret_key': AWS_SECRET_ACCESS_KEY,
+            },
+        },
+        'staticfiles': {
+            'BACKEND': f'{PROJECT_NAME}.storage_backends.StaticStorage',
+            'OPTIONS': {
+                'location': AWS_STATIC_LOCATION,
+                'bucket_name': AWS_STORAGE_BUCKET_NAME,
+                'endpoint_url': AWS_S3_ENDPOINT_URL,
+                'access_key': AWS_ACCESS_KEY_ID,
+                'secret_key': AWS_SECRET_ACCESS_KEY,
+            },
+        },
+        'private': {
+            'BACKEND': f'{PROJECT_NAME}.storage_backends.PrivateMediaStorage',
+            'OPTIONS': {
+                'location': AWS_PRIVATE_MEDIA_LOCATION,
+                'bucket_name': AWS_STORAGE_BUCKET_NAME,
+                'endpoint_url': AWS_S3_ENDPOINT_URL,
+                'access_key': AWS_ACCESS_KEY_ID,
+                'secret_key': AWS_SECRET_ACCESS_KEY,
+                'default_acl': 'private',
+                'custom_domain': False,  # Disable custom domain for private files
+            },
+        },
+    }
+
+# Development settings (for local media/static handling)
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"), ]
