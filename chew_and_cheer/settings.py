@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     # 'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
     # 'graphql_auth',
     'check_service_health',
+    'django_test_enforcer',
 ]
 
 MIDDLEWARE = [

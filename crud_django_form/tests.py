@@ -121,3 +121,77 @@ class CrudDjangoFormViewsTest(TestCase):
         self.item.refresh_from_db()
         self.assertEqual(self.item.name, 'Updated Item')
         self.assertEqual(self.item.price, 30.99)
+
+
+
+# ======================================================================
+# AUTO-GENERATED TESTS - Django Test Enforcer
+# Generated on: 2026-02-13 17:54:03
+# These tests FAIL by default - implement them to make them pass!
+# ======================================================================
+
+
+from django.urls import reverse
+
+class TestCrudDjangoFormFunctionViews(TestCase):
+    """Auto-generated tests for crud_django_form function-based views - IMPLEMENT THESE!"""
+
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='test@test.com',
+            password='testpass123'
+        )
+        self.user.is_active = True
+        self.user.save()
+        self.client.force_login(self.user)
+
+    def test_home_views(self):
+        """
+        Test home_views
+        URL: /crud_django_form/home-views/
+        Pattern: custom
+        Methods: GET, POST
+        Auth Required: No
+        
+        TODO: Implement this test!
+        """
+        # TODO: Add test implementation
+        # response = self.client.get(reverse("url_name"))
+        # self.assertEqual(response.status_code, 200)
+        # This test FAILS until you implement it!
+        self.fail("TODO: Implement test for home_views")
+
+
+class TestCrudDjangoFormFunctions(TestCase):
+    """Auto-generated tests for crud_django_form functions - IMPLEMENT THESE!"""
+
+    def test_home_views(self):
+        """
+        Test crud_django_form.urls.home_views
+        
+        
+        TODO: Implement this test!
+        """
+        # from crud_django_form.urls import home_views
+        # result = home_views()
+        # self.assertIsNotNone(result)
+        
+        # This test FAILS until you implement it!
+        self.fail("TODO: Implement test for home_views")
+
+    def test_home_views(self):
+        """
+        Test crud_django_form.views.home_views
+        
+        
+        TODO: Implement this test!
+        """
+        # from crud_django_form.views import home_views
+        # result = home_views()
+        # self.assertIsNotNone(result)
+        
+        # This test FAILS until you implement it!
+        self.fail("TODO: Implement test for home_views")
+
