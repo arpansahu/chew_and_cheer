@@ -48,7 +48,7 @@ pipeline {
                         python:3.10.7 \
                         bash -c 'pip install -q -r requirements.txt && \
                                  pip install -q pytest pytest-django pytest-asyncio channels pytest-cov && \
-                                 python manage.py test --verbosity=2 --failfast'
+                                 python manage.py test --verbosity=2 --failfast --noinput'
                     """
                     
                     echo '✅ All unit tests passed successfully!'
