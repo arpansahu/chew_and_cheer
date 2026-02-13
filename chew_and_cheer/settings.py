@@ -128,6 +128,12 @@ import dj_database_url
 #updated
 DATABASES = {'default': dj_database_url.config(default=DATABASE_URL)}
 
+# Set PostgreSQL schema for test database
+if 'default' in DATABASES and DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql':
+    DATABASES['default']['OPTIONS'] = {
+        'options': '-c search_path=chew_and_cheer,public'
+    }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
