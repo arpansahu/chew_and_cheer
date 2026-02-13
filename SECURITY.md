@@ -7,13 +7,13 @@ We provide security patches for the latest release of our project. Users are enc
 
 | Version       | Supported          |
 | ------------- | ------------------ |
-| Latest        | 1.0.0 |
-| Previous      |  |
-| Older versions |                |
+| Latest        | 2.0.0 |
+| Previous      | 1.0.0 |
+| Older versions | Not supported |
 
 ## Reporting a Vulnerability
 
-If you find a security vulnerability, please send an email to [admin@arpansahu.me](mailto:admin@arpansahu.me). Please include the following details with your report:
+If you find a security vulnerability, please send an email to [arpansahu@zohomail.in](mailto:arpansahu@zohomail.in). Please include the following details with your report:
 
 - A description of the vulnerability
 - Steps to reproduce the issue
@@ -44,7 +44,7 @@ We encourage our users to follow these best practices to secure their deployment
 
 ## Contact
 
-For any security-related questions, please contact us at [admin@arpansahu.me](mailto:admin@arpansahu.me).
+For any security-related questions, please contact us at [arpansahu@zohomail.in](mailto:arpansahu@zohomail.in).
 
 ## Credits
 

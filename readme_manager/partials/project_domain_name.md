@@ -1,1 +1,1 @@
-chew-and-cheer.arpansahu.me
+chew.arpansahu.space
