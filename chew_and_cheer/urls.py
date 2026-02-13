@@ -38,7 +38,7 @@ def large_resource(request):
 
 urlpatterns = [
 
-    path('graphql/', include('graph_ql_app.urls')),
+    # path('graphql/', include('graph_ql_app.urls')),
 
     path('admin/', admin.site.urls),
 

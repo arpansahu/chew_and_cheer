@@ -66,10 +66,10 @@ INSTALLED_APPS = [
     'api',
     'rest_framework.authtoken',
     'django_filters',
-    'graphene_django',
-    'graph_ql_app',
-    'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
-    'graphql_auth',
+    # 'graphene_django',
+    # 'graph_ql_app',
+    # 'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
+    # 'graphql_auth',
     'check_service_health',
 ]
 
@@ -223,39 +223,38 @@ REST_FRAMEWORK = {
 #     "SCHEMA": "graph_ql_app.schema.schema"
 # }
 
-GRAPHENE = {
-
-    'MIDDLEWARE': [
-        'graphql_jwt.middleware.JSONWebTokenMiddleware',
-    ],
-}
+# GRAPHENE = {
+#     'MIDDLEWARE': [
+#         'graphql_jwt.middleware.JSONWebTokenMiddleware',
+#     ],
+# }
 
 # Authentication backend settings
 
 AUTHENTICATION_BACKENDS = [
-    'graphql_auth.backends.GraphQLAuthBackend',
+    # 'graphql_auth.backends.GraphQLAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-GRAPHQL_JWT = {
-
-    # ...
-    "JWT_ALLOW_ANY_CLASSES": [
-        "graphql_auth.mutations.Register",
-        "graphql_auth.mutations.VerifyAccount",
-        "graphql_auth.mutations.ResendActivationEmail",
-        "graphql_auth.mutations.SendPasswordResetEmail",
-        "graphql_auth.mutations.PasswordReset",
-        "graphql_auth.mutations.ObtainJSONWebToken",
-        "graphql_auth.mutations.VerifyToken",
-        "graphql_auth.mutations.RefreshToken",
-        "graphql_auth.mutations.RevokeToken",
-        "graphql_auth.mutations.VerifySecondaryEmail",
-    ],
-
-    "JWT_VERIFY_EXPIRATION": True,
-    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
-}
+# GRAPHQL_JWT = {
+# 
+#     # ...
+#     "JWT_ALLOW_ANY_CLASSES": [
+#         "graphql_auth.mutations.Register",
+#         "graphql_auth.mutations.VerifyAccount",
+#         "graphql_auth.mutations.ResendActivationEmail",
+#         "graphql_auth.mutations.SendPasswordResetEmail",
+#         "graphql_auth.mutations.PasswordReset",
+#         "graphql_auth.mutations.ObtainJSONWebToken",
+#         "graphql_auth.mutations.VerifyToken",
+#         "graphql_auth.mutations.RefreshToken",
+#         "graphql_auth.mutations.RevokeToken",
+#         "graphql_auth.mutations.VerifySecondaryEmail",
+#     ],
+# 
+#     "JWT_VERIFY_EXPIRATION": True,
+#     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+# }
 
 # Login_required Decorator
 LOGIN_URL = 'accounts/login'
