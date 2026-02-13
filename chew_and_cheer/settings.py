@@ -130,8 +130,13 @@ DATABASES = {'default': dj_database_url.config(default=DATABASE_URL)}
 
 # Set PostgreSQL schema for test database
 if 'default' in DATABASES and DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql':
-    DATABASES['default']['OPTIONS'] = {
-        'options': '-c search_path=chew_and_cheer,public'
+    # Merge OPTIONS to preserve any existing options and add search_path
+    if 'OPTIONS' not in DATABASES['default']:
+        DATABASES['default']['OPTIONS'] = {}
+    DATABASES['default']['OPTIONS']['options'] = '-c search_path=chew_and_cheer,public'
+    # Also set TEST database options to ensure schema is used during tests
+    DATABASES['default']['TEST'] = {
+        'NAME': 'test_arpansahu_one_db',
     }
 
 
