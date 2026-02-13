@@ -446,6 +446,9 @@ include_files = {
     "PROJECT_NODE_PORT": "../readme_manager/partials/project_node_port.md",
     "DOMAIN_NAME": "../readme_manager/partials/project_domain_name.md"
 }
+
+
+
 ```
 
 Also, remember if you want to include new files, you need to change the `baseREADME` file and the `include_files` array in the `common_readme` repository itself.
@@ -2060,7 +2063,7 @@ RUN pip3 install -r requirements.txt
 
 EXPOSE 8001
 
-CMD bash -c "python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:8001 chew_and_cheer.wsgi"
+CMD bash -c "python manage.py migrate --noinput && python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:8001 chew_and_cheer.wsgi"
 ```
 
 Create a file named docker-compose.yml and add following lines in it
@@ -2595,6 +2598,117 @@ For issues:
 4. [K3s GitHub Issues](https://github.com/k3s-io/k3s/issues)
 5. [Portainer Community Forums](https://www.portainer.io/community)
 
+---
+
+## SSL Certificates for Kubernetes
+
+### Overview
+
+K3s requires SSL certificates for TLS Ingress and secure pod communication (Java apps, Kafka, etc.). Certificates are **automatically managed** - see [SSL Automation Documentation](../ssl-automation/README.md).
+
+### Quick Reference
+
+**Automated Certificate Management:**
+- ✅ K3s secrets updated after SSL renewal (arpansahu-tls, kafka-ssl-keystore)
+- ✅ Keystores stored in `/var/lib/rancher/k3s/ssl/keystores/`
+- ✅ Uploaded to MinIO for Django projects
+- ✅ See [Django Integration Guide](./DJANGO_INTEGRATION.md)
+
+**Manual testing:**
+```bash
+# On server
+cd ~/k3s_scripts
+./1_renew_k3s_ssl_keystores.sh   # Update K3s secrets
+./2_upload_keystores_to_minio.sh # Upload to MinIO
+```
+
+### Using Certificates in Deployments
+
+#### Ingress with TLS
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-ingress
+spec:
+  tls:
+  - hosts:
+    - app.arpansahu.space
+    secretName: arpansahu-tls  # Auto-managed secret
+  rules:
+  - host: app.arpansahu.space
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app-service
+            port:
+              number: 80
+```
+
+#### Kafka Pod with SSL
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka
+spec:
+  template:
+    spec:
+      containers:
+      - name: kafka
+        image: confluentinc/cp-kafka:7.8.0
+        env:
+        - name: KAFKA_SSL_KEYSTORE_LOCATION
+          value: /etc/kafka/secrets/kafka.keystore.jks
+        - name: KAFKA_SSL_KEYSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: kafka-ssl-keystore  # Auto-managed secret
+              key: keystore-password
+        volumeMounts:
+        - name: kafka-ssl
+          mountPath: /etc/kafka/secrets
+          readOnly: true
+      volumes:
+      - name: kafka-ssl
+        secret:
+          secretName: kafka-ssl-keystore
+```
+
+### Monitoring
+
+```bash
+# List secrets
+kubectl get secrets
+
+# Check certificate expiry
+kubectl get secret arpansahu-tls -o jsonpath='{.data.tls\.crt}' | \
+  base64 -d | openssl x509 -noout -dates
+
+# View keystore secret
+kubectl describe secret kafka-ssl-keystore
+```
+
+### Troubleshooting
+
+**Pods not using new certificates:**
+- Restart deployment: `kubectl rollout restart deployment/your-app`
+- K8s doesn't auto-reload secrets - manual restart required
+
+**Certificate verification failed:**
+- Check secret exists: `kubectl get secret arpansahu-tls`
+- Verify expiry date (see Monitoring above)
+- Force renewal: See [SSL Automation](../ssl-automation/README.md)
+
+**For complete automation details, troubleshooting, and manual procedures:** [SSL Automation Documentation](../ssl-automation/README.md)
+
+---
+
 
 ### Step 4: Serving the requests from Nginx
 
@@ -2958,6 +3072,30 @@ Check renewal log:
 ```bash
 cat ~/.acme.sh/arpansahu.space/arpansahu.space.log
 ```
+
+---
+
+## SSL Certificate Automation & Renewal
+
+**Complete SSL automation is now centralized.** See **[SSL Automation Documentation](../ssl-automation/README.md)** for:
+
+- ✅ Automated renewal (acme.sh + deploy_certs.sh)
+- ✅ Nginx certificate deployment
+- ✅ Kafka keystore regeneration
+- ✅ Kubernetes secret updates
+- ✅ MinIO upload for Django projects
+- ✅ Complete troubleshooting guide
+
+**Quick verification:**
+```bash
+# Check certificate expiry
+openssl x509 -in /etc/nginx/ssl/arpansahu.space/fullchain.pem -noout -dates
+
+# Test automation
+ssh arpansahu@arpansahu.space '~/deploy_certs.sh'
+```
+
+---
 
 ### Backup Configuration
 
@@ -6695,6 +6833,94 @@ For fine-grained control, create a custom policy:
 
 Apply via Console: **Buckets** → Select bucket → **Access Policy** → **Add Custom Policy**
 
+#### Automated Bucket Policy Application
+
+For easier policy management, use the included scripts:
+
+**1. Create Policy File**
+
+Copy the example and customize for your bucket:
+
+```bash
+# Copy template
+cp minio_bucket_policy.json.example minio_bucket_policy.json
+
+# Edit to match your bucket name and paths
+nano minio_bucket_policy.json
+```
+
+Example policy for multi-project setup:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {"AWS": ["*"]},
+      "Action": ["s3:GetObject"],
+      "Resource": [
+        "arn:aws:s3:::arpansahu-one-bucket/portfolio/*/static/*",
+        "arn:aws:s3:::arpansahu-one-bucket/portfolio/*/media/*"
+      ]
+    }
+  ]
+}
+```
+
+**2. Update .env File**
+
+Ensure your `.env` contains:
+
+```env
+MINIO_ROOT_USER=arpansahu
+MINIO_ROOT_PASSWORD=your_password_here
+AWS_STORAGE_BUCKET_NAME=arpansahu-one-bucket
+MINIO_ENDPOINT=https://minioapi.arpansahu.space
+POLICY_FILE=minio_bucket_policy.json
+```
+
+**3. Apply Policy Using Script**
+
+```bash
+# Option 1: Interactive script (recommended)
+chmod +x apply_minio_policy.sh
+./apply_minio_policy.sh
+
+# Option 2: Python script
+pip install boto3 python-dotenv
+python3 apply_policy.py
+```
+
+**Available Methods:**
+
+| Method | Tool Required | Best For |
+|--------|---------------|----------|
+| **MinIO Client (mc)** | `brew install minio/stable/mc` | Quick setup, simple policies |
+| **AWS CLI** | `brew install awscli` | AWS compatibility, automation |
+| **Python (boto3)** | `pip install boto3` | Complex policies, validation |
+
+**Verify Policy Applied:**
+
+```bash
+# Using mc
+mc anonymous get myminio/arpansahu-one-bucket
+
+# Using AWS CLI
+aws --endpoint-url=https://minioapi.arpansahu.space \
+    s3api get-bucket-policy \
+    --bucket arpansahu-one-bucket
+
+# Test public access
+curl https://minioapi.arpansahu.space/arpansahu-one-bucket/portfolio/django_starter/static/test.txt
+```
+
+**Security Notes:**
+- ✅ Scripts use environment variables (safe to commit)
+- ✅ Never commit `.env` or `minio_bucket_policy.json` with real credentials
+- ✅ `.gitignore` includes these files by default
+- ✅ Use `.example` files as templates
+
 #### Path-Based Policy (Single Bucket with Multiple Access Levels)
 
 For **one bucket** with different paths having different access:
@@ -7701,6 +7927,10 @@ All deployment files are in: `AWS Deployment/Minio/`
 | `fix-websocket.sh` | Fixes WebSocket connection issues |
 | `nginx-console.conf` | Standalone Console nginx config |
 | `nginx-api.conf` | Standalone API nginx config |
+| `apply_minio_policy.sh` | Automated bucket policy application script |
+| `apply_policy.py` | Python script for bucket policy management |
+| `minio_bucket_policy.json.example` | Template for bucket policy |
+| `minio_bucket_policy.json` | Actual bucket policy (not in git) |
 | `README.md` | This documentation |
 
 **On Server:**
