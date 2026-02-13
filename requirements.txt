@@ -49,6 +49,6 @@ typing_extensions==4.12.2
 uritemplate==4.1.1
 urllib3==2.2.3
 whitenoise==6.7.0
-# django-test-enforcer==0.1.0  # Removed: incompatible with Django 3.2
+django-test-enforcer==0.1.0
 rich==14.3.2
 toml==0.10.2
