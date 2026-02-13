@@ -16,11 +16,11 @@ pipeline {
         ENV_PROJECT_NAME = "chew_and_cheer"
     }
     stages {
-        // stage('Checkout') {
-        //     steps {
-        //         checkout scm
-        //     }
-        // }
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
         stage('Setup Environment') {
             steps {
                 script {
