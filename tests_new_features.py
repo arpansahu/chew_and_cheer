@@ -242,24 +242,22 @@ class HomePageDashboardTest(TestCase):
         )
         
     def test_home_page_loads(self):
-        """Test home page loads successfully"""
+        """Test home page loads successfully without login"""
         response = self.client.get(reverse('home'))
-        # Home page might redirect if login required
-        self.assertIn(response.status_code, [200, 302])
+        # Home page should be publicly accessible
+        self.assertEqual(response.status_code, 200)
     
     def test_home_page_shows_features(self):
-        """Test home page displays all feature cards"""
-        # Login first in case home requires authentication
+        """Test home page displays all feature cards for authenticated users"""
         self.client.login(username='testuser', password='testpass123')
         response = self.client.get(reverse('home'))
-        self.assertIn(response.status_code, [200, 302])
+        self.assertEqual(response.status_code, 200)
         
-        if response.status_code == 200:
-            # Check for feature cards only if page loaded
-            self.assertContains(response, 'Django Forms CRUD')
-            self.assertContains(response, 'AJAX CRUD')
-            self.assertContains(response, 'REST API')
-            self.assertContains(response, 'GraphQL')
+        # Check for feature cards
+        self.assertContains(response, 'Django Forms CRUD')
+        self.assertContains(response, 'AJAX CRUD')
+        self.assertContains(response, 'REST API')
+        self.assertContains(response, 'GraphQL')
     
     def test_home_page_authenticated_user(self):
         """Test home page for authenticated user"""
