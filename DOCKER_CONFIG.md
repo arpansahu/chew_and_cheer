@@ -2,7 +2,7 @@
 
 ## 🎯 Single Source of Truth
 
-Docker image configuration is now centralized to reduce duplication and make updates easier.
+Docker image configuration is now **fully centralized** in the `.env` file - used by both local deployment and Jenkins CI/CD pipelines.
 
 ## 📋 Configuration Locations
 
@@ -26,29 +26,32 @@ image: ${DOCKER_REGISTRY}/${DOCKER_REPOSITORY}:${DOCKER_IMAGE_TAG}
 
 ### 3. **Jenkinsfile-build** (CI/CD Build)
 ```groovy
+// Loads configuration from .env file
 environment {
-    REGISTRY = "harbor.arpansahu.space"
-    REPOSITORY = "library/chew_and_cheer"
-    IMAGE_TAG = "${env.BUILD_ID}"
+    REGISTRY = readDockerConfig('DOCKER_REGISTRY')      // from .env
+    REPOSITORY = readDockerConfig('DOCKER_REPOSITORY')  // from .env
+    IMAGE_TAG = "${env.BUILD_ID}"                       // dynamic per build
 }
 ```
 **Purpose:**
-- Builds Docker image with versioned tags (BUILD_ID)
+- Reads registry/repository from .env (single source of truth)
+- Uses BUILD_ID for versioned tags (e.g., image:103)
 - Pushes to Harbor registry
-- Independent of .env (uses Jenkins environment)
+- Tags successful builds as `:latest`
 
 ### 4. **Jenkinsfile-deploy** (CI/CD Deploy)
 ```groovy
+// Loads configuration from .env file
 environment {
-    REGISTRY = "harbor.arpansahu.space"
-    REPOSITORY = "library/chew_and_cheer"
-    IMAGE_TAG = "latest"
+    REGISTRY = readDockerConfig('DOCKER_REGISTRY')      // from .env
+    REPOSITORY = readDockerConfig('DOCKER_REPOSITORY')  // from .env
+    IMAGE_TAG = readDockerConfig('DOCKER_IMAGE_TAG')    // from .env (usually "latest")
 }
 ```
 **Purpose:**
+- Reads all Docker config from .env (single source of truth)
 - Pulls pre-built image from Harbor
 - Deploys to Kubernetes or Docker
-- Independent of .env (uses Jenkins environment)
 
 ## 🔄 Deployment Flow
 
@@ -80,14 +83,16 @@ environment {
 
 ## 🎨 Benefits of This Architecture
 
-### ✅ Centralized Configuration
-- `.env` is the single source for local/server deployment
-- Change registry once, applies everywhere
+### ✅ True Single Source of Truth
+- **`.env` is the ONLY place** to configure Docker registry/repository/tag
+- Used by local development, server deployment, AND Jenkins CI/CD
+- Change once, applies everywhere automatically
+- Zero duplication across files
 
 ### ✅ Environment Separation
-- **Local:** Uses .env variables
-- **CI/CD:** Uses Jenkins environment variables
-- No cross-contamination
+- **Local/Server:** Uses .env variables directly
+- **CI/CD:** Jenkins reads from .env file in workspace
+- All environments stay in sync automatically
 
 ### ✅ Flexibility
 ```bash
@@ -111,27 +116,30 @@ docker-compose up -d
 
 ## 🔧 Configuration Updates
 
-### To Change Registry or Repository:
+### To Change Registry, Repository, or Tag:
 
-**Option 1: Local/Server Deployment**
-Edit `.env`:
+**Single Step - Edit `.env`:**
 ```env
 DOCKER_REGISTRY=your-registry.com
 DOCKER_REPOSITORY=your-org/your-app
 DOCKER_IMAGE_TAG=latest
 ```
 
-**Option 2: CI/CD Pipeline**
-Update both Jenkinsfiles:
-- `Jenkinsfile-build`: Change REGISTRY and REPOSITORY
-- `Jenkinsfile-deploy`: Change REGISTRY and REPOSITORY
+**That's it!** Changes automatically apply to:
+- ✅ Local docker-compose deployment
+- ✅ Server docker-compose deployment  
+- ✅ Jenkins build pipeline (registry/repository)
+- ✅ Jenkins deploy pipeline (all three values)
+
+**Note:** Jenkinsfile-build always uses `BUILD_ID` for `IMAGE_TAG` to create versioned builds, but reads registry and repository from .env.
 
 ## 📝 Best Practices
 
 1. **Keep .env out of version control** (already in .gitignore)
 2. **Use env.example** as template for new environments
-3. **Jenkinsfiles are committed** - they define CI/CD behavior
-4. **docker-compose.yml references .env** - don't hardcode values
+3. **All Docker config is in .env** - truly single source of truth
+4. **docker-compose.yml uses env vars** - no hardcoded values
+5. **Jenkins reads .env at runtime** - always up to date
 
 ## 🚀 Quick Commands
 

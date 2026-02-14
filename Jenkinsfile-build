@@ -1,3 +1,11 @@
+// Helper function to read Docker config from .env file
+@NonCPS
+def readDockerConfig(String key) {
+    def envFile = readFile('.env')
+    def matcher = (envFile =~ /(?m)^${key}=(.*)$/)
+    return matcher ? matcher[0][1].trim() : ''
+}
+
 pipeline {
     agent any
     
@@ -10,12 +18,28 @@ pipeline {
     }
     
     environment {
-        REGISTRY = "harbor.arpansahu.space"
-        REPOSITORY = "library/chew_and_cheer"
-        IMAGE_TAG = "${env.BUILD_ID}"
+        // Docker config will be loaded from .env file in Initialize stage
         ENV_PROJECT_NAME = "chew_and_cheer"
     }
+    
     stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    // Load Docker config from .env file (single source of truth)
+                    env.REGISTRY = readDockerConfig('DOCKER_REGISTRY')
+                    env.REPOSITORY = readDockerConfig('DOCKER_REPOSITORY')
+                    // Use BUILD_ID for unique image tagging per build
+                    env.IMAGE_TAG = "${env.BUILD_ID}"
+                    
+                    echo "Docker Configuration loaded from .env:"
+                    echo "Registry: ${env.REGISTRY}"
+                    echo "Repository: ${env.REPOSITORY}"
+                    echo "Image Tag: ${env.IMAGE_TAG}"
+                }
+            }
+        }
+        
         stage('Checkout') {
             steps {
                 checkout scm

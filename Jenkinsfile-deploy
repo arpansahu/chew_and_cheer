@@ -1,3 +1,11 @@
+// Helper function to read Docker config from .env file
+@NonCPS
+def readDockerConfig(String key) {
+    def envFile = readFile('.env')
+    def matcher = (envFile =~ /(?m)^${key}=(.*)$/)
+    return matcher ? matcher[0][1].trim() : ''
+}
+
 pipeline {
     agent { label 'local' }
     parameters {
@@ -5,9 +13,7 @@ pipeline {
         choice(name: 'DEPLOY_TYPE', choices: ['kubernetes', 'docker'], description: 'Select deployment type')
     }
     environment {
-        REGISTRY = "harbor.arpansahu.space"
-        REPOSITORY = "library/chew_and_cheer"
-        IMAGE_TAG = "latest"  // or use a specific tag if needed
+        // Docker config will be loaded from .env file in Initialize stage
         KUBECONFIG = "${env.WORKSPACE}/kubeconfig"  // Set the KUBECONFIG environment variable
         NGINX_CONF = "/etc/nginx/sites-available/chew-and-cheer"
         ENV_PROJECT_NAME = "chew_and_cheer"
@@ -24,6 +30,16 @@ pipeline {
             steps {
                 script {
                     echo "Current workspace path is: ${env.WORKSPACE}"
+                    
+                    // Load Docker config from .env file (single source of truth)
+                    env.REGISTRY = readDockerConfig('DOCKER_REGISTRY')
+                    env.REPOSITORY = readDockerConfig('DOCKER_REPOSITORY')
+                    env.IMAGE_TAG = readDockerConfig('DOCKER_IMAGE_TAG')
+                    
+                    echo "Docker Configuration loaded from .env:"
+                    echo "Registry: ${env.REGISTRY}"
+                    echo "Repository: ${env.REPOSITORY}"
+                    echo "Image Tag: ${env.IMAGE_TAG}"
                 }
             }
         }
