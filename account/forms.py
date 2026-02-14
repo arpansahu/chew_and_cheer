@@ -5,16 +5,55 @@ from django.contrib.auth import authenticate, get_user_model
 
 
 class RegistrationForm(UserCreationForm):
-    email = forms.EmailField(max_length=60, help_text='Required. Add a valid email')
+    email = forms.EmailField(
+        max_length=60,
+        help_text='Required. Add a valid email address',
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter your email address'
+        })
+    )
+    username = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Choose a username'
+        })
+    )
+    password1 = forms.CharField(
+        label='Password',
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter password'
+        })
+    )
+    password2 = forms.CharField(
+        label='Confirm Password',
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Confirm password'
+        })
+    )
 
     class Meta:
         model = User
-
         fields = ("email", "username", "password1", "password2")
 
 
 class AccountAuthenticationForm(forms.ModelForm):
-    password = forms.CharField(label='Password', widget=forms.PasswordInput)
+    username = forms.CharField(
+        label='Username or Email',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter username or email'
+        })
+    )
+    password = forms.CharField(
+        label='Password',
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter password'
+        })
+    )
 
     class Meta:
         model = User
@@ -22,11 +61,22 @@ class AccountAuthenticationForm(forms.ModelForm):
 
     def clean(self):
         if self.is_valid():
-            username = self.cleaned_data['username']
+            username_or_email = self.cleaned_data['username']
             password = self.cleaned_data['password']
-
-            if not authenticate(username=username, password=password):
-                raise forms.ValidationError("Invalid Credentials")
+            
+            # Try to authenticate with username first
+            user = authenticate(username=username_or_email, password=password)
+            
+            # If that fails, try to find user by email and authenticate
+            if not user:
+                try:
+                    user_obj = User.objects.get(email=username_or_email)
+                    user = authenticate(username=user_obj.username, password=password)
+                except User.DoesNotExist:
+                    pass
+            
+            if not user:
+                raise forms.ValidationError("Invalid username/email or password")
 
 
 class AccountUpdateForm(forms.ModelForm):

@@ -26,7 +26,7 @@ auth_views.LoginView
 from .views import (
     home,
     HomeClassView,
-
+    custom_schema_view,
 )
 
 def trigger_error(request):
@@ -38,7 +38,7 @@ def large_resource(request):
 
 urlpatterns = [
 
-    # path('graphql/', include('graph_ql_app.urls')),
+    path('graphql/', include('graph_ql_app.urls')),
 
     path('admin/', admin.site.urls),
 
@@ -51,12 +51,12 @@ urlpatterns = [
     path('api/v0/', include('api.urls')),
     # API schema and Documentation
     path('project/docs/', include_docs_urls(title='djangoProjectApis')),
-    path('project/schema/', get_schema_view(
+    path('project/schema/', custom_schema_view, name='openapi-schema'),
+    path('project/schema/raw/', get_schema_view(
         title="BlogAPI",
-        description="API for the "
-                    "django Project APIs",
+        description="API for the django Project APIs",
         version="1.0.0"
-    ), name='openapi-schema'),
+    ), name='openapi-schema-raw'),
 
     path('accounts/', include('account.urls')),
          

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GraphQL Playground - Chew & Cheer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/graphiql@1.4.7/graphiql.min.css" />
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+        }
+
+        /* Header Styling */
+        .custom-header {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            padding: 20px 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            position: relative;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-icon {
+            font-size: 32px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-link {
+            color: white;
+            text-decoration: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.15);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .header-link:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+
+        /* GraphiQL Container */
+        .graphiql-container {
+            height: calc(100% - 84px);
+            position: relative;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+        }
+
+        /* Override GraphiQL styles */
+        .graphiql-container .topBar {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            border: none;
+            padding: 12px 20px;
+        }
+
+        .graphiql-container .execute-button {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border: none;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .graphiql-container .execute-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+        }
+
+        .graphiql-container .docExplorerShow {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .graphiql-container .doc-explorer-title-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .graphiql-container .doc-explorer-back {
+            color: white;
+        }
+
+        /* Custom scrollbar */
+        .graphiql-container ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        .graphiql-container ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .graphiql-container ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            border-radius: 10px;
+        }
+
+        .graphiql-container ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #138496 0%, #0f6674 100%);
+        }
+
+        /* Welcome message styling */
+        .CodeMirror-info {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            border-radius: 8px;
+            color: #0d3e50;
+            font-weight: 500;
+        }
+
+        /* Syntax highlighting enhancements */
+        .graphiql-container .cm-property {
+            color: #17a2b8;
+            font-weight: 600;
+        }
+
+        .graphiql-container .cm-keyword {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .graphiql-container .cm-def {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        /* Result pane styling */
+        .graphiql-container .result-window {
+            background: #ffffff;
+        }
+
+        .graphiql-container .result-window .CodeMirror {
+            background: #f8f9fa;
+        }
+
+        /* Footer info */
+        .info-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 20px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .custom-header {
+                padding: 15px 20px;
+            }
+
+            .header-title h1 {
+                font-size: 18px;
+            }
+
+            .header-subtitle {
+                display: none;
+            }
+
+            .header-badge {
+                display: none;
+            }
+        }
+
+        /* Loading animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .graphiql-container {
+            animation: fadeIn 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Header -->
+    <div class="custom-header">
+        <div class="header-left">
+            <div class="header-title">
+                <div class="header-icon">🚀</div>
+                <div>
+                    <h1>GraphQL API Playground</h1>
+                    <div class="header-subtitle">Chew & Cheer Restaurant Management</div>
+                </div>
+            </div>
+        </div>
+        <div class="header-right">
+            <span class="header-badge">🔥 Interactive</span>
+            <a href="/graphql/home/" class="header-link">📝 CRUD View</a>
+            <a href="/" class="header-link">🏠 Home</a>
+        </div>
+    </div>
+
+    <!-- GraphiQL Container -->
+    <div id="graphiql" class="graphiql-container">Loading GraphQL IDE...</div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/react@17.0.2/umd/react.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/graphiql@1.4.7/graphiql.min.js"></script>
+
+    <script>
+        // Configure GraphiQL with custom settings
+        var fetcher = GraphiQL.createFetcher({
+            url: window.location.pathname,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        });
+
+        // Sample query to get users started
+        var defaultQuery = `# Welcome to GraphQL Playground! 🎉
+# 
+# Type queries in the left panel and press Ctrl+Enter to execute
+# Press Ctrl+Space for auto-completion suggestions
+# 
+# Try this example query:
+
+query GetAllItems {
+  allItems {
+    id
+    name
+    description
+    price
+  }
+}
+
+# Example mutation to create an item:
+# mutation CreateItem {
+#   createItem(name: "Pizza", description: "Delicious", price: 12.99) {
+#     item {
+#       id
+#       name
+#       price
+#     }
+#   }
+# }`;
+
+        // Render GraphiQL
+        ReactDOM.render(
+            React.createElement(GraphiQL, {
+                fetcher: fetcher,
+                defaultQuery: defaultQuery,
+                headerEditorEnabled: true,
+                docExplorerOpen: false,
+            }),
+            document.getElementById('graphiql')
+        );
+    </script>
+</body>
+</html>

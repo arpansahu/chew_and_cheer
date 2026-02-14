@@ -3,78 +3,183 @@
 
 {% block content %}
 
-<style type="text/css" >
-
-  .form-signin {
-    width: 100%;
-    max-width: 330px;
-    padding: 15px;
-    margin: auto;
+<style type="text/css">
+    .auth-container {
+        max-width: 500px;
+        margin: 60px auto;
+        padding: 0 20px;
     }
-  .form-signin .form-control {
-    position: relative;
-    box-sizing: border-box;
-    height: auto;
-    padding: 10px;
-    font-size: 16px;
-  }
-  .form-signin .form-control:focus {
-    z-index: 2;
-  }
-  .form-signin input[type="email"] {
-    margin-bottom: -1px;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-  .form-signin input[type="password"] {
-    margin-bottom: 10px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-  }
-  .h3  {
-    text-align: center;
-  }
-
+    
+    .auth-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .auth-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px 30px;
+        text-align: center;
+    }
+    
+    .auth-header img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: white;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .auth-header h1 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 0;
+    }
+    
+    .auth-body {
+        padding: 40px 30px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+        display: block;
+    }
+    
+    .form-control {
+        border-radius: 8px;
+        border: 2px solid #e9ecef;
+        padding: 12px 15px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .btn-login {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: white;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+    
+    .error-message {
+        background: #ffebee;
+        color: #c62828;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        border-left: 4px solid #c62828;
+        font-size: 0.9rem;
+    }
+    
+    .auth-footer {
+        text-align: center;
+        padding: 20px 30px;
+        background: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .auth-footer a {
+        color: #667eea;
+        font-weight: 600;
+        text-decoration: none;
+        display: block;
+        margin: 10px 0;
+    }
+    
+    .auth-footer a:hover {
+        color: #764ba2;
+    }
+    
+    .info-badge {
+        background: #e3f2fd;
+        color: #1976d2;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+        border-left: 4px solid #1976d2;
+    }
 </style>
 
-
-<form class="form-signin" method="post">{% csrf_token %}
-
-   <div class="d-flex flex-column pb-3">
-    <img class="img-fluid mx-auto d-block" src="{% static 'restaurant.png' %}" alt="CHEW and CHEER logo" width="72" height="72">
-  </div>
-
-
-  <h1 class="h3 mb-3 font-weight-normal">Login</h1>
-
-  <input type="text" name="username" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
-
-  <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
-
-  {% for field in login_form %}
-      <p>
-        {% for error in field.errors %}
-          <p style="color: red">{{ error }}</p>
-        {% endfor %}
-      </p>
-  {% endfor %}
-  {% if login_form.non_field_errors %}
-    <div style="color: red">
-      <p>{{login_form.non_field_errors}}</p>
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <img src="{% static 'restaurant.png' %}" alt="CHEW and CHEER logo">
+            <h1><i class="fas fa-sign-in-alt"></i> Welcome Back</h1>
+        </div>
+        
+        <div class="auth-body">
+            <div class="info-badge">
+                <i class="fas fa-info-circle"></i> You can login using your <strong>username</strong> or <strong>email address</strong>
+            </div>
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                {% if login_form.non_field_errors %}
+                    <div class="error-message">
+                        <strong><i class="fas fa-exclamation-triangle"></i> Error:</strong>
+                        {{ login_form.non_field_errors }}
+                    </div>
+                {% endif %}
+                
+                <div class="form-group">
+                    <label for="id_username">
+                        <i class="fas fa-user"></i> Username or Email
+                    </label>
+                    <input type="text" name="username" id="id_username" class="form-control" 
+                           placeholder="Enter your username or email" required autofocus>
+                    {% if login_form.username.errors %}
+                        <div class="error-message">{{ login_form.username.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_password">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <input type="password" name="password" id="id_password" class="form-control" 
+                           placeholder="Enter your password" required>
+                    {% if login_form.password.errors %}
+                        <div class="error-message">{{ login_form.password.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <button class="btn btn-login" type="submit">
+                    <i class="fas fa-sign-in-alt"></i> Log In
+                </button>
+            </form>
+        </div>
+        
+        <div class="auth-footer">
+            <a href="{% url 'password_reset' %}"><i class="fas fa-key"></i> Forgot Password?</a>
+            <a href="{% url 'register' %}"><i class="fas fa-user-plus"></i> Don't have an account? Join Us</a>
+        </div>
     </div>
-
-  {% endif %}
-
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
-
-</form>
-
-    <div class="d-flex flex-column">
-      <a class="m-auto" href="{% url 'password_reset' %}">Reset password</a>
-    </div>
-
-    <div class="d-flex flex-column">
-        <a class="m-auto" href="{% url 'register' %}">Join Us</a>
-    </div>
+</div>
 
 {% endblock content %}

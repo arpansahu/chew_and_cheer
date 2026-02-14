@@ -2,31 +2,240 @@
 {% load static %}
 {% block content %}
 
-    <div class="row" style="padding: 20px;"> <!-- Adjusted padding -->
-        {% if request.user.is_authenticated %}
-            <p style="align-content: center">
-                <a class="btn btn-outline-primary" href="{% url 'crudformhome' %}">CRUD USING DJANGO FORMS</a> |
-            </p>
-            <p style="align-content: center">
-                <a class="btn btn-outline-primary" href="{% url 'crud_ajax' %}">CRUD USING AJAX AND JQUERY/Class Views</a> |
-            </p>
-            <p style="align-content: center">
-                <a class="btn btn-outline-primary" href="{% url 'graphql_home' %}">CRUD USING GRAPHQL</a> |
-            </p>
-            <p style="align-content: center">
-                <a class="btn btn-outline-primary" href="project/docs/">GRAPHQL API</a> |
-            </p>
-            <p style="align-content: center">
-                <a class="btn btn-outline-primary" href="project/docs/">REST API DOCS</a> |
-            </p>
-            <p style="align-content: center">
-                <a class="btn btn-outline-primary" href="{% url 'openapi-schema' %}">REST API SCHEMA</a>
-            </p>
-        {% else %}
-            <p>
-                <a class="btn btn-outline-primary" href="{% url 'login' %}">Login to View The Entire Home Page</a>
-            </p>
-        {% endif %}
-    </div>
+<style>
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+    
+    .welcome-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px;
+        border-radius: 15px;
+        margin-bottom: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .welcome-section h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    
+    .welcome-section p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+    
+    .stats-card {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .stats-card h3 {
+        color: #667eea;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+    
+    .stats-card p {
+        color: #666;
+        font-size: 1rem;
+    }
+    
+    .feature-card {
+        background: white;
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        border-color: #667eea;
+    }
+    
+    .feature-icon {
+        font-size: 3rem;
+        color: #667eea;
+        margin-bottom: 20px;
+    }
+    
+    .feature-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 15px;
+    }
+    
+    .feature-description {
+        color: #666;
+        font-size: 1rem;
+        margin-bottom: 20px;
+    }
+    
+    .feature-btn {
+        width: 100%;
+        padding: 12px;
+        font-size: 1.1rem;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .feature-btn:hover {
+        transform: scale(1.05);
+    }
+    
+    .section-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+</style>
+
+<div class="dashboard-container">
+    {% if request.user.is_authenticated %}
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h1><i class="fas fa-utensils"></i> CHEW and CHEER</h1>
+            <p>{{ welcome_message|default:"Welcome to your Restaurant Management Dashboard" }}</p>
+        </div>
+
+        <!-- Statistics Section -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <h3>{{ total_items|default:"0" }}</h3>
+                    <p><i class="fas fa-hamburger"></i> Total Menu Items</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <h3><i class="fas fa-check-circle text-success"></i></h3>
+                    <p>System Status: Active</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <h3><i class="fas fa-user-shield text-primary"></i></h3>
+                    <p>Role: {{ request.user.username|title }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <h2 class="section-title">Available Features</h2>
+        
+        <div class="row">
+            <!-- CRUD Django Forms -->
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <h3 class="feature-title">Django Forms CRUD</h3>
+                    <p class="feature-description">Manage menu items using traditional Django forms with full CRUD operations.</p>
+                    <a href="{% url 'crudformhome' %}" class="btn btn-primary feature-btn">
+                        <i class="fas fa-arrow-right"></i> Open Django Forms
+                    </a>
+                </div>
+            </div>
+
+            <!-- CRUD Ajax -->
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="feature-title">AJAX CRUD</h3>
+                    <p class="feature-description">Real-time menu management using AJAX and jQuery with class-based views.</p>
+                    <a href="{% url 'crud_ajax' %}" class="btn btn-success feature-btn">
+                        <i class="fas fa-arrow-right"></i> Open AJAX CRUD
+                    </a>
+                </div>
+            </div>
+
+            <!-- GraphQL CRUD -->
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <h3 class="feature-title">GraphQL CRUD</h3>
+                    <p class="feature-description">Modern API-driven menu management using GraphQL queries and mutations.</p>
+                    <a href="{% url 'graphql_home' %}" class="btn btn-info feature-btn">
+                        <i class="fas fa-arrow-right"></i> Open GraphQL
+                    </a>
+                </div>
+            </div>
+
+            <!-- REST API Docs -->
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3 class="feature-title">REST API Documentation</h3>
+                    <p class="feature-description">Browse comprehensive API documentation for REST endpoints.</p>
+                    <a href="/project/docs/" class="btn btn-warning feature-btn">
+                        <i class="fas fa-arrow-right"></i> View API Docs
+                    </a>
+                </div>
+            </div>
+
+            <!-- REST API Schema -->
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3 class="feature-title">API Schema</h3>
+                    <p class="feature-description">Explore the OpenAPI schema for RESTful API endpoints.</p>
+                    <a href="{% url 'openapi-schema' %}" class="btn btn-secondary feature-btn">
+                        <i class="fas fa-arrow-right"></i> View Schema
+                    </a>
+                </div>
+            </div>
+
+            <!-- GraphQL Explorer -->
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3 class="feature-title">GraphQL Explorer</h3>
+                    <p class="feature-description">Interactive GraphQL playground for testing queries and mutations.</p>
+                    <a href="/graphql/" class="btn btn-dark feature-btn">
+                        <i class="fas fa-arrow-right"></i> Open Explorer
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+        <!-- Not Authenticated Section -->
+        <div class="welcome-section text-center">
+            <h1><i class="fas fa-lock"></i> Authentication Required</h1>
+            <p>Please log in to access the Restaurant Management Dashboard</p>
+            <a href="{% url 'login' %}" class="btn btn-light btn-lg mt-3" style="padding: 12px 40px; font-size: 1.2rem;">
+                <i class="fas fa-sign-in-alt"></i> Login to Continue
+            </a>
+        </div>
+    {% endif %}
+</div>
 
 {% endblock %}

@@ -1,0 +1,977 @@
+{% load static %}
+{% load rest_framework %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ document.title }}</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="{% static 'rest_framework/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'rest_framework/docs/css/jquery.json-view.min.css' %}" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f7fa;
+            color: #2d3748;
+        }
+
+        /* Custom Header */
+        .custom-header {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 30px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-icon {
+            font-size: 40px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .header-title h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            opacity: 0.95;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 12px;
+        }
+
+        .header-link {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.15);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-size: 14px;
+        }
+
+        .header-link:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: white;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+            display: flex;
+            gap: 30px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-nav {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+
+        .sidebar-nav h4 {
+            color: #28a745;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #28a745;
+        }
+
+        .sidebar-nav .nav {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-nav .nav-item {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-nav .nav-link {
+            color: #4a5568;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: block;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .sidebar-nav .nav-link:hover {
+            background: #e6f7ed;
+            color: #28a745;
+            text-decoration: none;
+            transform: translateX(5px);
+        }
+
+        .sidebar-nav .nav-link.active {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .endpoint-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            transition: all 0.3s ease;
+        }
+
+        .endpoint-section:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .method-badge {
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .method-get { background: #bee3f8; color: #2c5282; }
+        .method-post { background: #c6f6d5; color: #22543d; }
+        .method-put { background: #feebc8; color: #7c2d12; }
+        .method-patch { background: #fbd38d; color: #7c2d12; }
+        .method-delete { background: #feb2b2; color: #742a2a; }
+
+        .endpoint-path {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .endpoint-description {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            color: #28a745;
+            font-size: 22px;
+            font-weight: 700;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #28a745;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .sidebar-nav {
+                position: static;
+                max-height: none;
+            }
+
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .endpoint-section {
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Hide original REST framework interactive elements for now */
+        .form-actions, .code-sample, pre.highlight {
+            display: none;
+        }
+    </style>
+
+    {% if code_style %}<style>{{ code_style }}</style>{% endif %}
+    <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
+    <script src="{% url 'api-docs:schema-js' %}"></script>
+</head>
+
+<body>
+    
+    <!-- Custom Header -->
+    <div class="custom-header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="header-icon">📚</div>
+                <div class="header-title">
+                    <h1>{{ document.title }}</h1>
+                    <div class="header-subtitle">RESTful API Documentation - Chew & Cheer</div>
+                </div>
+            </div>
+            <div class="header-right">
+                <a href="/project/schema/" class="header-link">📡 API Schema</a>
+                <a href="/graphql/" class="header-link">🚀 GraphQL</a>
+                <a href="/" class="header-link">🏠 Home</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <h4>🔗 Endpoints</h4>
+                <ul class="nav">
+                    {% if document|data %}
+                    {% for section_key, section in document|data|items %}
+                        {% for link_key, link in section|schema_links|items %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="#{{ section_key }}-{{ link_key|slugify }}">
+                                {{ link.title|default:link_key }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    {% endfor %}
+                    {% endif %}
+                    
+                    {% for link_key, link in document.links|items %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#{{ link_key|slugify }}">
+                            {{ link.title|default:link_key }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            {% if document.description %}
+            <div class="endpoint-section">
+                <div class="endpoint-description">
+                    {% render_markdown document.description %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if document|data %}
+            {% for section_key, section in document|data|items %}
+                {% if section_key %}
+                <h2 class="section-title" id="{{ section_key }}">{{ section_key }}</h2>
+                {% endif %}
+
+                {% for link_key, link in section|schema_links|items %}
+                <div class="endpoint-section" id="{{ section_key }}-{{ link_key|slugify }}">
+                    <div class="endpoint-header">
+                        <span class="method-badge method-{{ link.action|lower }}">{{ link.action }}</span>
+                        <span class="endpoint-path">{{ link.url }}</span>
+                    </div>
+
+                    {% if link.description %}
+                    <div class="endpoint-description">
+                        {% render_markdown link.description %}
+                    </div>
+                    {% endif %}
+
+                    {% include "rest_framework/docs/link.html" %}
+                </div>
+                {% endfor %}
+            {% endfor %}
+            {% endif %}
+
+            {% for link_key, link in document.links|items %}
+            <div class="endpoint-section" id="{{ link_key|slugify }}">
+                <div class="endpoint-header">
+                    <span class="method-badge method-{{ link.action|lower }}">{{ link.action }}</span>
+                    <span class="endpoint-path">{{ link.url }}</span>
+                </div>
+
+                {% if link.description %}
+                <div class="endpoint-description">
+                    {% render_markdown link.description %}
+                </div>
+                {% endif %}
+
+                {% include "rest_framework/docs/link.html" %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% include "rest_framework/docs/auth/token.html" %}
+    {% include "rest_framework/docs/auth/basic.html" %}
+    {% include "rest_framework/docs/auth/session.html" %}
+
+    <script src="{% static 'rest_framework/js/jquery-3.7.1.min.js' %}"></script>
+    <script src="{% static 'rest_framework/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'rest_framework/docs/js/jquery.json-view.min.js' %}"></script>
+    <script src="{% static 'rest_framework/docs/js/api.js' %}"></script>
+    <script>
+        {% if user.is_authenticated %}
+            window.auth = {
+                'type': 'session',
+            };
+            $('#selected-authentication').text('session');
+            $('#auth-control').children().removeClass('active');
+            $('#auth-control').find("[data-auth='session']").closest('li').addClass('active');
+        {% endif %}
+        $('pre.highlight').filter('[data-language="{{ langs | first }}"]').removeClass('hide');
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('.sidebar-nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="{% static 'rest_framework/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'rest_framework/docs/css/jquery.json-view.min.css' %}" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f7fa;
+            color: #2d3748;
+        }
+
+        /* Custom Header */
+        .custom-header {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 30px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-icon {
+            font-size: 40px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .header-title h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            opacity: 0.95;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 12px;
+        }
+
+        .header-link {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.15);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-size: 14px;
+        }
+
+        .header-link:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: white;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+            display: flex;
+            gap: 30px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-nav {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+
+        .sidebar-nav h4 {
+            color: #28a745;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #28a745;
+        }
+
+        .sidebar-nav .nav {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-nav .nav-item {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-nav .nav-link {
+            color: #4a5568;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: block;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .sidebar-nav .nav-link:hover {
+            background: #e6f7ed;
+            color: #28a745;
+            text-decoration: none;
+            transform: translateX(5px);
+        }
+
+        .sidebar-nav .nav-link.active {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .endpoint-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            transition: all 0.3s ease;
+        }
+
+        .endpoint-section:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .method-badge {
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .method-get { background: #bee3f8; color: #2c5282; }
+        .method-post { background: #c6f6d5; color: #22543d; }
+        .method-put { background: #feebc8; color: #7c2d12; }
+        .method-patch { background: #fbd38d; color: #7c2d12; }
+        .method-delete { background: #feb2b2; color: #742a2a; }
+
+        .endpoint-path {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .endpoint-description {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .params-section {
+            margin-top: 20px;
+        }
+
+        .params-section h5 {
+            color: #28a745;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .param-item {
+            background: #f7fafc;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #28a745;
+        }
+
+        .param-name {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 14px;
+        }
+
+        .param-required {
+            color: #e53e3e;
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        .param-type {
+            color: #805ad5;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .param-description {
+            color: #718096;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        /* Try it out section */
+        .try-section {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 2px dashed #cbd5e0;
+        }
+
+        .try-section h5 {
+            color: #28a745;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 6px;
+            display: block;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+        }
+
+        .btn-try {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .btn-try:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+
+        .response-section {
+            margin-top: 20px;
+            background: #1a202c;
+            padding: 20px;
+            border-radius: 10px;
+            color: #e2e8f0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .response-section::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .response-section::-webkit-scrollbar-track {
+            background: #2d3748;
+            border-radius: 10px;
+        }
+
+        .response-section::-webkit-scrollbar-thumb {
+            background: #28a745;
+            border-radius: 10px;
+        }
+
+        /* Sidebar scrollbar */
+        .sidebar-nav::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar-nav::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .sidebar-nav::-webkit-scrollbar-thumb {
+            background: #28a745;
+            border-radius: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .sidebar-nav {
+                position: static;
+                max-height: none;
+            }
+
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .endpoint-section {
+            animation: fadeIn 0.5s ease;
+        }
+    </style>
+
+    <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
+    <script src="/project/docs/schema.js"></script>
+</head>
+
+<body data-spy="scroll" data-target="#sidebar-nav" data-offset="50">
+    
+    <!-- Custom Header -->
+    <div class="custom-header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="header-icon">📚</div>
+                <div class="header-title">
+                    <h1>{{ document.title }}</h1>
+                    <div class="header-subtitle">RESTful API Documentation - Chew & Cheer</div>
+                </div>
+            </div>
+            <div class="header-right">
+                <a href="/project/schema/" class="header-link">📡 API Schema</a>
+                <a href="/graphql/" class="header-link">🚀 GraphQL</a>
+                <a href="/" class="header-link">🏠 Home</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <h4>🔗 Endpoints</h4>
+                <ul class="nav">
+                    {% for link in document.links %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#{{ link.url|slugify }}">
+                            {{ link.url }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            {% for link in document.links %}
+            <div class="endpoint-section" id="{{ link.url|slugify }}">
+                <div class="endpoint-header">
+                    <span class="method-badge method-{{ link.action|lower }}">{{ link.action }}</span>
+                    <span class="endpoint-path">{{ link.url }}</span>
+                </div>
+
+                {% if link.description %}
+                <div class="endpoint-description">
+                    {{ link.description }}
+                </div>
+                {% endif %}
+
+                {% if link.fields %}
+                <div class="params-section">
+                    <h5>📝 Parameters</h5>
+                    {% for field in link.fields %}
+                    <div class="param-item">
+                        <div>
+                            <span class="param-name">{{ field.name }}</span>
+                            {% if field.required %}
+                            <span class="param-required">REQUIRED</span>
+                            {% endif %}
+                            {% if field.schema.type %}
+                            <span class="param-type">{{ field.schema.type }}</span>
+                            {% endif %}
+                        </div>
+                        {% if field.schema.description %}
+                        <div class="param-description">{{ field.schema.description }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Try it out section -->
+                <div class="try-section">
+                    <h5>🧪 Try it out</h5>
+                    <form class="endpoint-form" data-url="{{ link.url }}" data-action="{{ link.action }}">
+                        {% csrf_token %}
+                        {% for field in link.fields %}
+                        <div class="form-group">
+                            <label for="field-{{ forloop.counter }}">
+                                {{ field.name }}
+                                {% if field.required %}
+                                <span style="color: #e53e3e;">*</span>
+                                {% endif %}
+                            </label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="field-{{ forloop.counter }}"
+                                name="{{ field.name }}"
+                                {% if field.required %}required{% endif %}
+                                placeholder="Enter {{ field.name }}"
+                            >
+                        </div>
+                        {% endfor %}
+                        <button type="submit" class="btn-try">
+                            🚀 Send Request
+                        </button>
+                    </form>
+                    <div class="response-section" style="display: none;">
+                        <pre></pre>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        // Handle form submissions
+        document.querySelectorAll('.endpoint-form').forEach(form => {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const url = this.dataset.url;
+                const method = this.dataset.action;
+                const formData = new FormData(this);
+                const responseSection = this.parentElement.querySelector('.response-section');
+                const responsePre = responseSection.querySelector('pre');
+                
+                try {
+                    const headers = {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                    };
+                    
+                    const body = {};
+                    for (let [key, value] of formData.entries()) {
+                        if (key !== 'csrfmiddlewaretoken') {
+                            body[key] = value;
+                        }
+                    }
+                    
+                    const response = await fetch(url, {
+                        method: method,
+                        headers: headers,
+                        body: method !== 'GET' ? JSON.stringify(body) : undefined
+                    });
+                    
+                    const data = await response.json();
+                    
+                    responseSection.style.display = 'block';
+                    responsePre.textContent = JSON.stringify(data, null, 2);
+                } catch (error) {
+                    responseSection.style.display = 'block';
+                    responsePre.textContent = 'Error: ' + error.message;
+                }
+            });
+        });
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('.sidebar-nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

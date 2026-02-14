@@ -50,7 +50,8 @@ class AnswerAdmin(admin.ModelAdmin):
     ]
 
 
-app = apps.get_app_config('graphql_auth')
-
-for model_name, model in app.models.items():
-    admin.site.register(model)
+# Commented out due to Django 4.x compatibility issues with graphql_auth
+# app = apps.get_app_config('graphql_auth')
+# 
+# for model_name, model in app.models.items():
+#     admin.site.register(model)

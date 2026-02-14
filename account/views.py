@@ -39,9 +39,19 @@ def login_view(request):
     if request.POST:
         form = AccountAuthenticationForm(request.POST)
         if form.is_valid():
-            username = request.POST['username']
+            username_or_email = request.POST['username']
             password = request.POST['password']
-            user = authenticate(username=username, password=password)
+            
+            # Try to authenticate with username first
+            user = authenticate(username=username_or_email, password=password)
+            
+            # If that fails, try to find user by email and authenticate
+            if not user:
+                try:
+                    user_obj = User.objects.get(email=username_or_email)
+                    user = authenticate(username=user_obj.username, password=password)
+                except User.DoesNotExist:
+                    pass
 
             if user:
                 login(request, user)

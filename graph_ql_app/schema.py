@@ -1,11 +1,11 @@
 import graphene
 from graphene_django import DjangoObjectType, DjangoListField
-from graphql_auth import mutations, relay
+# from graphql_auth import mutations, relay
 
 from crud_django_form.models import Item
 
 from graph_ql_app.models import Category, Quizzes, Question, Answer
-from graphql_auth.schema import UserQuery, MeQuery
+# from graphql_auth.schema import UserQuery, MeQuery
 
 
 class ItemType(DjangoObjectType):
@@ -190,37 +190,37 @@ schema2 = graphene.Schema(query=Query2, mutation=Mutation2)
 
 
 # --------------------User Authentication-----------
-
-class QueryUserAuthentication(UserQuery, MeQuery, graphene.ObjectType):
-    pass
-
-
-class AuthMutation(graphene.ObjectType):
-    register = mutations.Register.Field()
-    verify_account = mutations.VerifyAccount.Field()
-    resend_activation_email = mutations.ResendActivationEmail.Field()
-    send_password_reset_email = mutations.SendPasswordResetEmail.Field()
-    password_reset = mutations.PasswordReset.Field()
-    password_set = mutations.PasswordSet.Field()  # For passwordless registration
-    password_change = mutations.PasswordChange.Field()
-    update_account = mutations.UpdateAccount.Field()
-    # update_account = relay.UpdateAccount.Field()
-    archive_account = mutations.ArchiveAccount.Field()
-    delete_account = mutations.DeleteAccount.Field()
-    send_secondary_email_activation = mutations.SendSecondaryEmailActivation.Field()
-    verify_secondary_email = mutations.VerifySecondaryEmail.Field()
-    swap_emails = mutations.SwapEmails.Field()
-    remove_secondary_email = mutations.RemoveSecondaryEmail.Field()
-
-    # django-graphql-jwt inheritances
-    token_auth = mutations.ObtainJSONWebToken.Field()
-    verify_token = mutations.VerifyToken.Field()
-    refresh_token = mutations.RefreshToken.Field()
-    revoke_token = mutations.RevokeToken.Field()
+# Commented out due to Django 4.x compatibility issues with graphql_auth
+# class QueryUserAuthentication(UserQuery, MeQuery, graphene.ObjectType):
+#     pass
 
 
-class Mutation3(AuthMutation, graphene.ObjectType):
-    pass
+# class AuthMutation(graphene.ObjectType):
+#     register = mutations.Register.Field()
+#     verify_account = mutations.VerifyAccount.Field()
+#     resend_activation_email = mutations.ResendActivationEmail.Field()
+#     send_password_reset_email = mutations.SendPasswordResetEmail.Field()
+#     password_reset = mutations.PasswordReset.Field()
+#     password_set = mutations.PasswordSet.Field()  # For passwordless registration
+#     password_change = mutations.PasswordChange.Field()
+#     update_account = mutations.UpdateAccount.Field()
+#     # update_account = relay.UpdateAccount.Field()
+#     archive_account = mutations.ArchiveAccount.Field()
+#     delete_account = mutations.DeleteAccount.Field()
+#     send_secondary_email_activation = mutations.SendSecondaryEmailActivation.Field()
+#     verify_secondary_email = mutations.VerifySecondaryEmail.Field()
+#     swap_emails = mutations.SwapEmails.Field()
+#     remove_secondary_email = mutations.RemoveSecondaryEmail.Field()
+
+#     # django-graphql-jwt inheritances
+#     token_auth = mutations.ObtainJSONWebToken.Field()
+#     verify_token = mutations.VerifyToken.Field()
+#     refresh_token = mutations.RefreshToken.Field()
+#     revoke_token = mutations.RevokeToken.Field()
 
 
-schema_user_authentication = graphene.Schema(query=QueryUserAuthentication, mutation=Mutation3)
+# class Mutation3(AuthMutation, graphene.ObjectType):
+#     pass
+
+
+# schema_user_authentication = graphene.Schema(query=QueryUserAuthentication, mutation=Mutation3)

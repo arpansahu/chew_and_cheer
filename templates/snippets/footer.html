@@ -2,73 +2,120 @@
 <style>
     .footer-container {
         width: 100%;
-        background-color: #f8f9fa;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
         text-align: center;
-        padding: 10px 15px;
-        box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+        padding: 30px 15px;
+        box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+        margin-top: 40px;
     }
 
     .footer-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
         max-width: 1200px;
         margin: 0 auto;
     }
 
     .footer-content h6 {
-        font-size: 14px;
-        color: #6c757d;
-        margin: 0;
+        font-size: 16px;
+        color: white;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    .footer-content h6 a {
+        color: white;
+        text-decoration: underline;
+        font-weight: 700;
+    }
+    
+    .footer-content h6 a:hover {
+        color: #ffeb3b;
     }
 
     .footer-content .nav-footer {
         list-style: none;
         display: flex;
+        justify-content: center;
         gap: 15px;
         padding: 0;
         margin: 0;
+        flex-wrap: wrap;
     }
 
     .footer-content .btn-social {
         display: inline-flex;
         align-items: center;
-        padding: 5px 10px;
+        padding: 10px 20px;
         font-size: 14px;
-        color: #6c757d;
+        font-weight: 600;
+        color: white;
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid white;
+        border-radius: 8px;
         text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .footer-content .btn-social:hover {
+        background: white;
+        color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255,255,255,0.3);
     }
 
     .footer-content .btn-social .fa {
         margin-right: 8px;
+        font-size: 16px;
+    }
+    
+    .footer-divider {
+        border-top: 2px solid rgba(255,255,255,0.3);
+        margin: 20px 0;
+    }
+    
+    @media (max-width: 768px) {
+        .footer-content .nav-footer {
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .footer-content .btn-social {
+            width: 100%;
+            justify-content: center;
+        }
     }
 </style>
 
 <div class="footer-container">
     <div class="footer-content">
-        <h6>© CHEW and CHEER LLP, Inc. All rights reserved. | <a href="https://arpansahu.me" class="font-weight-bold" target="_blank">arpansahu.me</a></h6>
-
         <ul class="nav-footer">
             <li class="nav-item">
-                <a class="btn btn-social btn-github" href="https://github.com/arpansahu/chew_and_cheer" target="_blank">
+                <a class="btn btn-social" href="https://github.com/arpansahu/chew_and_cheer" target="_blank">
                     <span class="fa fa-github"></span> Clone This Repo
                 </a>
             </li>
             <li class="nav-item">
-                <a class="btn btn-social btn-github" href="https://github.com/arpansahu" target="_blank">
+                <a class="btn btn-social" href="https://github.com/arpansahu" target="_blank">
                     <span class="fa fa-github"></span> Follow on GitHub
                 </a>
             </li>
             <li class="nav-item">
                 <a class="btn btn-social" href="https://arpansahu.me" target="_blank">
-                    <span class="fa"><img src="{% static 'arpansahu-footer.png' %}" width="13" height="13" alt="Portfolio"></span> Portfolio
+                    <span class="fa fa-globe"></span> Portfolio
                 </a>
             </li>
             <li class="nav-item">
-                <a class="btn btn-social btn-linkedin" href="https://www.linkedin.com/in/arpansahu" target="_blank">
+                <a class="btn btn-social" href="https://www.linkedin.com/in/arpansahu" target="_blank">
                     <span class="fa fa-linkedin"></span> Follow on LinkedIn
                 </a>
             </li>
         </ul>
+        
+        <div class="footer-divider"></div>
+        
+        <h6>
+            <i class="fas fa-copyright"></i> CHEW and CHEER LLP, Inc. All rights reserved. | 
+            Developed by <a href="https://arpansahu.me" target="_blank">Arpan Sahu</a>
+        </h6>
     </div>
 </div>
