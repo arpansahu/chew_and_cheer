@@ -69,6 +69,7 @@ TEST_STATUS.md
 TEST_FINAL_REPORT.md
 tests_new_features.py
 test_requirements.txt
+test_docker_locally.sh
 monitor_build.py
 monitor_deploy.py
 trigger_build.py
