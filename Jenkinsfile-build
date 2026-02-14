@@ -72,6 +72,7 @@ pipeline {
                             -v \$(pwd):/app \
                             -w /app \
                             --env-file .env \
+                            -e BASE_URL=http://127.0.0.1:8016 \
                             mcr.microsoft.com/playwright/python:v1.40.0-jammy \
                             bash -c '
                                 set -e

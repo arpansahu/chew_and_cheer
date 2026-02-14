@@ -6,11 +6,13 @@ Ensure the Django server is running on the configured BASE_URL port.
 For authenticated tests, ensure a test user exists in the database.
 """
 import pytest
+import os
 from playwright.sync_api import Page, expect
 
 
 # Test configuration - Update this to match your local server
-BASE_URL = "http://localhost:8000"
+# Can be overridden with BASE_URL environment variable
+BASE_URL = os.environ.get("BASE_URL", "http://localhost:8000")
 
 
 @pytest.fixture(scope="session")
