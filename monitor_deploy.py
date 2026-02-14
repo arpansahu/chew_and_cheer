@@ -4,6 +4,20 @@ import urllib.request
 import json
 import time
 import sys
+import os
+import base64
+from dotenv import load_dotenv
+
+# Load environment variables from .env
+load_dotenv()
+
+JENKINS_USER = os.getenv('JENKINS_USER', 'arpansahu')
+JENKINS_TOKEN = os.getenv('JENKINS_TOKEN')
+
+if not JENKINS_TOKEN:
+    print('❌ ERROR: JENKINS_TOKEN not found in .env file')
+    print('Add: JENKINS_TOKEN=your_token_here to .env')
+    sys.exit(1)
 
 def check_build_status(build_number):
     """Check Jenkins deploy build status."""
@@ -11,8 +25,7 @@ def check_build_status(build_number):
     req = urllib.request.Request(url)
     
     # Add authentication
-    import base64
-    credentials = base64.b64encode(b"arpansahu:1153f9fa722abd396e3282fda21040f978").decode('ascii')
+    credentials = base64.b64encode(f"{JENKINS_USER}:{JENKINS_TOKEN}".encode()).decode('ascii')
     req.add_header('Authorization', f'Basic {credentials}')
     
     try:

@@ -1,8 +1,19 @@
 #!/usr/bin/env python3
-import time, json, urllib.request, base64, sys
+import time, json, urllib.request, base64, sys, os
+from dotenv import load_dotenv
+
+# Load environment variables from .env
+load_dotenv()
 
 url_base = 'https://jenkins.arpansahu.space/job/chew_and_cheer_build'
-user, token = 'arpansahu', '1153f9fa722abd396e3282fda21040f978'
+user = os.getenv('JENKINS_USER', 'arpansahu')
+token = os.getenv('JENKINS_TOKEN')
+
+if not token:
+    print('❌ ERROR: JENKINS_TOKEN not found in .env file')
+    print('Add: JENKINS_TOKEN=your_token_here to .env')
+    sys.exit(1)
+
 auth = base64.b64encode(f'{user}:{token}'.encode()).decode()
 build_num = int(sys.argv[1]) if len(sys.argv) > 1 else 19
 

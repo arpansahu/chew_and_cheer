@@ -2,6 +2,22 @@
 """Update Jenkins credential with .env file content."""
 import urllib.request
 import urllib.parse
+import os
+import sys
+import base64
+from dotenv import load_dotenv
+
+# Load environment variables from .env
+load_dotenv()
+
+# Get Jenkins credentials
+JENKINS_USER = os.getenv('JENKINS_USER', 'arpansahu')
+JENKINS_TOKEN = os.getenv('JENKINS_TOKEN')
+
+if not JENKINS_TOKEN:
+    print('❌ ERROR: JENKINS_TOKEN not found in .env file')
+    print('Add: JENKINS_TOKEN=your_token_here to .env')
+    sys.exit(1)
 
 # Read .env file
 with open('.env', 'r') as f:
@@ -20,8 +36,7 @@ url = "https://jenkins.arpansahu.space/credentials/store/system/domain/_/credent
 req = urllib.request.Request(url, data=xml_content.encode('utf-8'), method='POST')
 
 # Add authentication
-import base64
-credentials = base64.b64encode(b"arpansahu:1153f9fa722abd396e3282fda21040f978").decode('ascii')
+credentials = base64.b64encode(f"{JENKINS_USER}:{JENKINS_TOKEN}".encode()).decode('ascii')
 req.add_header('Authorization', f'Basic {credentials}')
 req.add_header('Content-Type', 'application/xml')
 
