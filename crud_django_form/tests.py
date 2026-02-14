@@ -71,12 +71,14 @@ class CrudDjangoFormViewsTest(TestCase):
 
     def test_home_view_get(self):
         """Test home view GET request"""
+        self.client.login(username='testuser', password='testpass123')
         response = self.client.get(reverse('crudformhome'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Test Item')
 
     def test_home_view_post_create_item(self):
         """Test home view POST request to create item"""
+        self.client.login(username='testuser', password='testpass123')
         data = {
             'name': 'New Item',
             'description': 'New Description',
@@ -100,6 +102,7 @@ class CrudDjangoFormViewsTest(TestCase):
 
     def test_update_item_view_get(self):
         """Test update item view GET request"""
+        self.client.login(username='testuser', password='testpass123')
         response = self.client.get(
             reverse('curdformupdate', kwargs={'id': self.item.id})
         )
@@ -108,6 +111,7 @@ class CrudDjangoFormViewsTest(TestCase):
 
     def test_update_item_view_post(self):
         """Test update item view POST request"""
+        self.client.login(username='testuser', password='testpass123')
         data = {
             'name': 'Updated Item',
             'description': 'Updated Description',
