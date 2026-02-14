@@ -7,7 +7,7 @@ from io import StringIO
 
 
 class Command(BaseCommand):
-    help = 'Run all service health checks for the Django Starter application'
+    help = 'Run all service health checks for the Chew and Cheer application'
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -20,7 +20,7 @@ class Command(BaseCommand):
             nargs='+',
             type=str,
             metavar='SERVICE',
-            help='Skip specific services (e.g., --skip kafka rabbitmq)'
+            help='Skip specific services (e.g., --skip storage email)'
         )
         parser.add_argument(
             '--only',
@@ -37,20 +37,15 @@ class Command(BaseCommand):
         
         self.stdout.write('\n' + '='*70)
         self.stdout.write(self.style.SUCCESS(
-            '   🏥 DJANGO STARTER - SERVICE HEALTH CHECK'
+            '   🏥 CHEW AND CHEER - SERVICE HEALTH CHECK'
         ))
         self.stdout.write('='*70 + '\n')
         
-        # Define all available services
+        # Define all available services for this app
         all_services = [
             ('db', 'test_db', 'Database (PostgreSQL)', True),
             ('cache', 'test_cache', 'Cache (Redis)', True),
-            ('celery', 'test_celery', 'Celery Workers', True),
-            ('storage', 'test_storage', 'Storage (MinIO/S3)', True),
-            ('flower', 'test_flower', 'Flower Monitoring', False),
-            ('elasticsearch', 'test_elasticsearch', 'Elasticsearch', self._is_elasticsearch_configured()),
-            ('kafka', 'test_kafka', 'Apache Kafka', self._is_kafka_configured()),
-            ('rabbitmq', 'test_rabbitmq', 'RabbitMQ', self._is_rabbitmq_configured()),
+            ('storage', 'test_storage', 'Storage (S3)', True),
             ('email', 'test_email', 'Email Service (MailJet)', self._is_email_configured()),
             ('harbor', 'test_harbor', 'Harbor Registry', self._is_harbor_configured()),
         ]
@@ -154,18 +149,6 @@ class Command(BaseCommand):
                 f'❌ {failed_count} service(s) failed health check!\n'
             ))
             raise CommandError(f'{failed_count} service(s) failed health check')
-    
-    def _is_elasticsearch_configured(self):
-        """Check if Elasticsearch is configured"""
-        return bool(getattr(settings, 'ELASTICSEARCH_HOST', None))
-    
-    def _is_kafka_configured(self):
-        """Check if Kafka is configured"""
-        return bool(getattr(settings, 'KAFKA_BOOTSTRAP_SERVERS', None))
-    
-    def _is_rabbitmq_configured(self):
-        """Check if RabbitMQ is configured"""
-        return bool(getattr(settings, 'RABBITMQ_HOST', None))
     
     def _is_email_configured(self):
         """Check if Email is configured"""
