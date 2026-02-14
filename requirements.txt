@@ -11,7 +11,7 @@ dj-database-url==2.2.0
 Django==4.2.16
 django-filter==24.3
 django-graphql-auth==0.3.16
-django-graphql-jwt
+# django-graphql-jwt  # Commented out - not compatible with PyJWT 2.9.0 and not being used
 django-mailjet==0.3.1
 django-redis==5.4.0
 django-storages==1.14.4
