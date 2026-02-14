@@ -32,12 +32,16 @@ def home(request):
 
 class HomeClassView(View):
     """
-    Class-based view for home page with enhanced functionality.
-    Home page is accessible to everyone - authenticated users see personalized content.
+    Class-based view for home page.
+    Redirects non-authenticated users to login page.
     """
     template_name = 'Home.html'
     
     def get(self, request):
+        # Redirect non-authenticated users to login
+        if not request.user.is_authenticated:
+            return redirect('login')
+            
         context = self.get_context_data()
         return render(request, self.template_name, context)
     

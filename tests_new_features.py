@@ -242,10 +242,11 @@ class HomePageDashboardTest(TestCase):
         )
         
     def test_home_page_loads(self):
-        """Test home page loads successfully without login"""
+        """Test home page redirects to login for non-authenticated users"""
         response = self.client.get(reverse('home'))
-        # Home page should be publicly accessible
-        self.assertEqual(response.status_code, 200)
+        # Home page should redirect to login for non-authenticated users
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('/login/', response.url)
     
     def test_home_page_shows_features(self):
         """Test home page displays all feature cards for authenticated users"""
