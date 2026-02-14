@@ -60,3 +60,16 @@ socialauth
 **/migrations/**
 
 venv
+
+# Development/Internal files (not for production) #
+####################################################
+SECURITY_AUDIT.md
+DOCKER_CONFIG.md
+TEST_STATUS.md
+TEST_FINAL_REPORT.md
+tests_new_features.py
+test_requirements.txt
+monitor_build.py
+monitor_deploy.py
+trigger_build.py
+update_jenkins_cred.py
