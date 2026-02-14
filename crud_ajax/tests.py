@@ -133,49 +133,45 @@ class TestCrudAjaxClassBasedViews(TestCase):
 
     def test_create_crud_user(self):
         """
-        Test CreateCrudUser
-        URL: /crud_ajax/createcruduser/
-        Pattern: custom
-        Methods: GET, OPTIONS
-        Auth Required: No
-        
-        TODO: Implement this test!
+        Test CreateCrudUser - AJAX create endpoint
         """
-        # TODO: Add test implementation
-        # response = self.client.get(reverse("url_name"))
-        # self.assertEqual(response.status_code, 200)
-        # This test FAILS until you implement it!
-        self.fail("TODO: Implement test for CreateCrudUser")
+        response = self.client.get('/ajax/createcruduser/', {
+            'name': 'Test Item',
+            'description': 'Test Description',
+            'price': '99.99'
+        })
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIn('item', data)
+        self.assertEqual(data['item']['name'], 'Test Item')
+        self.assertEqual(data['item']['price'], '99.99')
 
     def test_delete_crud_user(self):
         """
-        Test DeleteCrudUser
-        URL: /crud_ajax/deletecruduser/
-        Pattern: custom
-        Methods: GET, OPTIONS
-        Auth Required: No
-        
-        TODO: Implement this test!
+        Test DeleteCrudUser - AJAX delete endpoint
         """
-        # TODO: Add test implementation
-        # response = self.client.get(reverse("url_name"))
-        # self.assertEqual(response.status_code, 200)
-        # This test FAILS until you implement it!
-        self.fail("TODO: Implement test for DeleteCrudUser")
+        item = Item.objects.create(name='Delete Me', description='Test', price='10.00')
+        response = self.client.get(f'/ajax/deletecruduser/?id={item.id}')
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIn('item', data)
+        self.assertFalse(Item.objects.filter(id=item.id).exists())
 
     def test_update_crud_user(self):
         """
-        Test UpdateCrudUser
-        URL: /crud_ajax/updatecruduser/
-        Pattern: custom
-        Methods: GET, OPTIONS
-        Auth Required: No
-        
-        TODO: Implement this test!
+        Test UpdateCrudUser - AJAX update endpoint
         """
-        # TODO: Add test implementation
-        # response = self.client.get(reverse("url_name"))
-        # self.assertEqual(response.status_code, 200)
-        # This test FAILS until you implement it!
-        self.fail("TODO: Implement test for UpdateCrudUser")
+        item = Item.objects.create(name='Old Name', description='Old Desc', price='10.00')
+        response = self.client.get('/ajax/updatecruduser/', {
+            'id': item.id,
+            'name': 'New Name',
+            'description': 'New Desc',
+            'price': '20.00'
+        })
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIn('item', data)
+        item.refresh_from_db()
+        self.assertEqual(item.name, 'New Name')
+        self.assertEqual(item.price, '20.00')
 
