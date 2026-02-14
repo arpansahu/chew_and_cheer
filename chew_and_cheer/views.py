@@ -30,10 +30,10 @@ def home(request):
     return render(request, 'Home.html', context)
 
 
-@method_decorator(login_required(redirect_field_name=''), name='dispatch')
 class HomeClassView(View):
     """
     Class-based view for home page with enhanced functionality.
+    Home page is accessible to everyone - authenticated users see personalized content.
     """
     template_name = 'Home.html'
     
