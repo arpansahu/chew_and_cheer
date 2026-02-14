@@ -42,8 +42,15 @@ LOGGING = {}
 EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 
 # Disable Sentry during tests
-import sentry_sdk
-sentry_sdk.init(dsn=None)
+try:
+    import sentry_sdk
+    sentry_sdk.init(dsn=None)
+except ImportError:
+    pass
+
+# Disable Celery during tests (if used)
+CELERY_TASK_ALWAYS_EAGER = True
+CELERY_TASK_EAGER_PROPAGATES = True
 
 # Disable debug for tests
 DEBUG = False
