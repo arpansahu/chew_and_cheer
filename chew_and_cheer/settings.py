@@ -454,6 +454,6 @@ LOGGING = {
     },
 }
 
-CSRF_TRUSTED_ORIGINS = ['https://school-chale-hum.arpansahu.me', ]
+CSRF_TRUSTED_ORIGINS = ['https://school-chale-hum.arpansahu.space', ]
 # Django 4.2 compatibility
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
