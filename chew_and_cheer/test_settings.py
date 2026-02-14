@@ -48,10 +48,6 @@ try:
 except ImportError:
     pass
 
-# Disable Celery during tests (if used)
-CELERY_TASK_ALWAYS_EAGER = True
-CELERY_TASK_EAGER_PROPAGATES = True
-
 # Disable debug for tests
 DEBUG = False
 
