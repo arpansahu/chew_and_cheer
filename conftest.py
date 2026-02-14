@@ -44,7 +44,11 @@ def test_user_credentials():
 @pytest.fixture
 def authenticated_page(page: Page, test_user_credentials, base_url):
     """Login and return authenticated page"""
-    page.goto(f"{base_url}/login/")
+    page.goto(f"{base_url}/login/", wait_until="domcontentloaded")
+    
+    # Wait for the login form to be visible
+    page.wait_for_selector("input[name='username']", state="visible", timeout=10000)
+    
     page.fill("input[name='username']", test_user_credentials["username"])
     page.fill("input[name='password']", test_user_credentials["password"])
     page.click("button[type='submit']")
