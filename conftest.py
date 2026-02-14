@@ -45,7 +45,7 @@ def test_user_credentials():
 def authenticated_page(page: Page, test_user_credentials, base_url):
     """Login and return authenticated page"""
     page.goto(f"{base_url}/login/")
-    page.fill("input[name='username']", test_user_credentials["email"])
+    page.fill("input[name='username']", test_user_credentials["username"])
     page.fill("input[name='password']", test_user_credentials["password"])
     page.click("button[type='submit']")
     page.wait_for_load_state("networkidle")
