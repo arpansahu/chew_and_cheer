@@ -1,11 +1,3 @@
-// Helper function to read Docker config from .env file
-@NonCPS
-def readDockerConfig(String key) {
-    def envFile = readFile('.env')
-    def matcher = (envFile =~ /(?m)^${key}=(.*)$/)
-    return matcher ? matcher[0][1].trim() : ''
-}
-
 pipeline {
     agent any
     
@@ -17,40 +9,49 @@ pipeline {
         )
     }
     
-    environment {
-        // Docker config will be loaded from .env file in Initialize stage
-        ENV_PROJECT_NAME = "chew_and_cheer"
-    }
-    
     stages {
-        stage('Initialize') {
-            steps {
-                script {
-                    // Load Docker config from .env file (single source of truth)
-                    env.REGISTRY = readDockerConfig('DOCKER_REGISTRY')
-                    env.REPOSITORY = readDockerConfig('DOCKER_REPOSITORY')
-                    // Use BUILD_ID for unique image tagging per build
-                    env.IMAGE_TAG = "${env.BUILD_ID}"
-                    
-                    echo "Docker Configuration loaded from .env:"
-                    echo "Registry: ${env.REGISTRY}"
-                    echo "Repository: ${env.REPOSITORY}"
-                    echo "Image Tag: ${env.IMAGE_TAG}"
-                }
-            }
-        }
-        
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
+        
         stage('Setup Environment') {
             steps {
                 script {
                     withCredentials([file(credentialsId: 'chew_and_cheer_env_file', variable: 'ENV_FILE')]) {
-                        sh "cat \$ENV_FILE > .env"
-                        echo '.env file created successfully from credentials'
+                        // Use Jenkins API instead of shell commands (fixes permission issues)
+                        def envContent = readFile(file: env.ENV_FILE)
+                        writeFile(file: '.env', text: envContent)
+                        echo '✅ .env file created successfully from credentials'
+                        
+                        // Parse and load ALL environment variables from .env
+                        def envVars = sh(script: 'cat .env | grep -v "^#" | grep -v "^$" | xargs', returnStdout: true).trim()
+                        if (envVars) {
+                            envVars.split().each { envVar ->
+                                if (envVar.contains('=')) {
+                                    def parts = envVar.split('=', 2)
+                                    def key = parts[0]
+                                    def value = parts.length > 1 ? parts[1] : ''
+                                    if (key) {
+                                        env."${key}" = value
+                                    }
+                                }
+                            }
+                        }
+                        
+                        echo '✅ Environment variables loaded from .env'
+                        
+                        // Compute derived variables
+                        env.BUILD_PROJECT_NAME = "${env.ENV_PROJECT_NAME}_build"
+                        env.PROJECT_NAME_WITH_DASH = env.ENV_PROJECT_NAME.replace('_', '-')
+                        env.REGISTRY = "${env.DOCKER_REGISTRY}/${env.DOCKER_REPOSITORY}"
+                        env.REPOSITORY = "${env.DOCKER_REGISTRY}/${env.DOCKER_REPOSITORY}"
+                        env.IMAGE_TAG = "${env.BUILD_ID}"
+                        
+                        echo "Docker Image: ${env.REGISTRY}:${env.IMAGE_TAG}"
+                        echo "Project: ${env.ENV_PROJECT_NAME}"
+                        echo "Build Project: ${env.BUILD_PROJECT_NAME}"
                     }
                 }
             }
