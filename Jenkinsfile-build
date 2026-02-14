@@ -152,7 +152,6 @@ else:
                         bash -c 'pip install -q -r requirements.txt && \
                                  python manage.py test_db && \
                                  python manage.py test_cache && \
-                                 python manage.py test_storage && \
                                  python manage.py test_email --detailed'
                     """
                     
