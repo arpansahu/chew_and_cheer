@@ -155,7 +155,7 @@ class TestCrudDjangoFormFunctionViews(TestCase):
         Item.objects.create(name='Item 1', description='Desc 1', price='10.00')
         Item.objects.create(name='Item 2', description='Desc 2', price='20.00')
         
-        response = self.client.get('/')
+        response = self.client.get('/crud_django_forms/crudformHome')
         self.assertEqual(response.status_code, 200)
         self.assertIn('items', response.context)
         self.assertEqual(len(response.context['items']), 2)

@@ -1,4 +1,5 @@
-from django.test import TestCase
+from django.test import TestCase, Client
+from django.contrib.auth.models import User
 from .models import Menu, Item, Person, Adhar, Movie, Artists
 
 
@@ -146,7 +147,7 @@ class TestModellingFunctionViews(TestCase):
     def test_render(self):
         """
         Test render view - This URL pattern doesn't exist in modelling app  
-        \"\"\"
+        """
         # Modelling app has no render view/URL - this test passes as no-op
         pass
 
