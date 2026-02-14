@@ -60,3 +60,8 @@ socialauth
 **/migrations/**
 
 venv
+
+# Development/Testing scripts (not for production) #
+####################################################
+test_docker_locally.sh
+test_ui_locally.sh
