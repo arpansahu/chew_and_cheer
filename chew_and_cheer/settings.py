@@ -42,6 +42,11 @@ MAIL_JET_API_SECRET = config('MAIL_JET_API_SECRET')
 MAIL_JET_EMAIL_ADDRESS = config('MAIL_JET_EMAIL_ADDRESS')
 MY_EMAIL_ADDRESS = config('MY_EMAIL_ADDRESS')
 
+# Harbor Registry Configuration
+HARBOR_URL = config('HARBOR_URL', default='harbor.arpansahu.space')
+HARBOR_USERNAME = config('HARBOR_USERNAME')
+HARBOR_PASSWORD = config('HARBOR_PASSWORD')
+
 SENTRY_ENVIRONMENT = config('SENTRY_ENVIRONMENT')  # production Or "staging", "development", etc.
 SENTRY_DSH_URL = config('SENTRY_DSH_URL')
 

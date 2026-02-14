@@ -46,8 +46,8 @@ class Command(BaseCommand):
             ('db', 'test_db', 'Database (PostgreSQL)', True),
             ('cache', 'test_cache', 'Cache (Redis)', True),
             ('storage', 'test_storage', 'Storage (S3)', True),
-            ('email', 'test_email', 'Email Service (MailJet)', self._is_email_configured()),
-            ('harbor', 'test_harbor', 'Harbor Registry', self._is_harbor_configured()),
+            ('email', 'test_email', 'Email Service (MailJet)', True),
+            ('harbor', 'test_harbor', 'Harbor Registry', True),
         ]
         
         # Filter services based on arguments
@@ -149,11 +149,3 @@ class Command(BaseCommand):
                 f'❌ {failed_count} service(s) failed health check!\n'
             ))
             raise CommandError(f'{failed_count} service(s) failed health check')
-    
-    def _is_email_configured(self):
-        """Check if Email is configured"""
-        return bool(getattr(settings, 'MAIL_JET_API_KEY', None))
-    
-    def _is_harbor_configured(self):
-        """Check if Harbor is configured"""
-        return bool(getattr(settings, 'HARBOR_URL', None))
