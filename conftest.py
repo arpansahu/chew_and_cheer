@@ -44,27 +44,38 @@ def test_user_credentials():
 @pytest.fixture
 def authenticated_page(page: Page, test_user_credentials, base_url):
     """Login and return authenticated page"""
-    # Navigate to login page
-    page.goto(f"{base_url}/login/", wait_until="load")
-    page.wait_for_load_state("networkidle")
+    # Navigate to login page (correct URL: /accounts/login/)
+    page.goto(f"{base_url}/accounts/login/", wait_until="domcontentloaded")
     
-    # Check if we're actually on the login page (not redirected)
-    if "/login" not in page.url:
+    # Wait a bit for any redirects or dynamic content
+    page.wait_for_timeout(1000)
+    
+    # Check if we're actually on the login page (not already authenticated)
+    current_url = page.url
+    if "/login" not in current_url:
         # Already authenticated or redirected
         return page
     
-    # Try to find and fill the login form
+    # Wait for page to be fully loaded
+    page.wait_for_load_state("networkidle", timeout=10000)
+    
+    # Fill login form
     try:
-        # Use locator with auto-waiting instead of wait_for_selector
         page.locator("input[name='username']").fill(test_user_credentials["username"])
         page.locator("input[name='password']").fill(test_user_credentials["password"])
+        
+        # Click the submit button
         page.locator("button[type='submit']").click()
-        page.wait_for_load_state("networkidle")
+        
+        # Wait for navigation after login
+        page.wait_for_load_state("networkidle", timeout=10000)
+        
     except Exception as e:
-        pytest.skip(f"Login form not found or failed: {e}")
+        pytest.skip(f"Login failed: {e}")
     
-    # Check if login succeeded
+    # Verify login succeeded (should not be on login page anymore)
     if "/login" in page.url:
+        # Check for error messages
         error_visible = page.locator(".alert-danger, .errorlist, .error").count() > 0
         if error_visible:
             pytest.skip("Login failed - check test user credentials")
