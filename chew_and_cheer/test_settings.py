@@ -6,6 +6,14 @@ Disables external services like Redis, Sentry, and email for isolated testing.
 """
 from .settings import *
 
+# Override test runner to exclude UI tests
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
+# Exclude test_ui.py files from Django's test discovery (they run separately with pytest)
+import sys
+if 'test' in sys.argv:
+    TEST_DISCOVER_PATTERN = 'tests.py'
+
 # Use SQLite for tests - much faster than PostgreSQL
 DATABASES = {
     'default': {
