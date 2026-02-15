@@ -204,12 +204,12 @@ else:
                     sh 'docker --version'
 
                     // Log the image details
-                    echo "Building Docker image: ${REGISTRY}/${REPOSITORY}:${IMAGE_TAG}"
+                    echo "Building Docker image: ${REGISTRY}:${IMAGE_TAG}"
 
                     // Build the Docker image
                     sh """
-                    docker build -t ${REGISTRY}/${REPOSITORY}:${IMAGE_TAG} .
-                    docker tag ${REGISTRY}/${REPOSITORY}:${IMAGE_TAG} ${REGISTRY}/${REPOSITORY}:latest
+                    docker build -t ${REGISTRY}:${IMAGE_TAG} .
+                    docker tag ${REGISTRY}:${IMAGE_TAG} ${REGISTRY}:latest
                     """
                 }
             }
@@ -225,8 +225,8 @@ else:
 
                         // Push the Docker image to the registry
                         sh '''
-                        docker push ${REGISTRY}/${REPOSITORY}:${IMAGE_TAG}
-                        docker push ${REGISTRY}/${REPOSITORY}:latest
+                        docker push ${REGISTRY}:${IMAGE_TAG}
+                        docker push ${REGISTRY}:latest
                         '''
                     }
                 }
@@ -237,7 +237,7 @@ else:
         success {
             script {
                 if (!currentBuild.description) {
-                    currentBuild.description = "Image: ${REGISTRY}/${REPOSITORY}:${IMAGE_TAG} built and pushed successfully"
+                    currentBuild.description = "Image: ${REGISTRY}:${IMAGE_TAG} built and pushed successfully"
                 }
                 
                 // Send success notification email
