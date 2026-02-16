@@ -1,18 +1,13 @@
-# Docker image configuration is now centralized in .env file
-# Variables: DOCKER_REGISTRY, DOCKER_REPOSITORY, DOCKER_IMAGE_TAG
-# This eliminates duplication across docker-compose.yml and Jenkinsfiles
-
 services:
   web:
-    build:  # Used for local development - builds from Dockerfile
+    build:  # This section will be used when running locally
       context: .
       dockerfile: Dockerfile
-    image: ${DOCKER_REGISTRY}/${DOCKER_REPOSITORY}:${DOCKER_IMAGE_TAG}  # Pulls from registry if available
+    image: ${DOCKER_REGISTRY}/${DOCKER_REPOSITORY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}
     env_file: ./.env
-    command: bash -c "python manage.py makemigrations && python manage.py migrate && gunicorn --bind 0.0.0.0:8001 chew_and_cheer.wsgi"
-    container_name: chew_and_cheer
-    volumes:
-      - .:/app
+    container_name: ${ENV_PROJECT_NAME}
+    # volumes:
+    #   - .:/app  # Only for local development, commented out for production deployment
     ports:
-      - "8001:8001"
+      - "${DOCKER_PORT}:${DOCKER_PORT}"
     restart: unless-stopped
