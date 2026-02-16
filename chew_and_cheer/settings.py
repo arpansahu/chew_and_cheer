@@ -26,9 +26,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 # ============================ENV VARIABLES=====================================
 SECRET_KEY = config('SECRET_KEY')
-DEBUG = config('DEBUG', cast=bool, default=False)
+DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(' ')
-
 AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
@@ -42,13 +41,21 @@ MAIL_JET_API_SECRET = config('MAIL_JET_API_SECRET')
 MAIL_JET_EMAIL_ADDRESS = config('MAIL_JET_EMAIL_ADDRESS')
 MY_EMAIL_ADDRESS = config('MY_EMAIL_ADDRESS')
 
-# Harbor Registry Configuration
-HARBOR_URL = config('HARBOR_URL', default='harbor.arpansahu.space')
-HARBOR_USERNAME = config('HARBOR_USERNAME')
-HARBOR_PASSWORD = config('HARBOR_PASSWORD')
+# Domain and Protocol Configuration
+if DEBUG:
+    DOMAIN = config('DOMAIN', default='localhost:8001')
+    PROTOCOL = config('PROTOCOL', default='http')
+else:
+    DOMAIN = config('DOMAIN')
+    PROTOCOL = config('PROTOCOL')
 
 SENTRY_ENVIRONMENT = config('SENTRY_ENVIRONMENT')  # production Or "staging", "development", etc.
 SENTRY_DSH_URL = config('SENTRY_DSH_URL')
+
+# Harbor Registry Configuration
+HARBOR_URL = config('HARBOR_URL', default='https://harbor.arpansahu.space')
+HARBOR_USERNAME = config('HARBOR_USERNAME', default='admin')
+HARBOR_PASSWORD = config('HARBOR_PASSWORD', default='')
 
 PROJECT_NAME = 'chew_and_cheer'
 USE_S3 = config('USE_S3', default=True, cast=bool)
@@ -287,9 +294,10 @@ if not USE_S3:
 else:
     AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME', default='eu-north-1')
     
+    # Common S3 settings
     AWS_S3_FILE_OVERWRITE = False  # Prevent overwriting files with the same name
     AWS_DEFAULT_ACL = None  # Ensure files are not public by default
-
+    
     # Switch between MinIO and AWS S3
     if BUCKET_TYPE == 'MINIO':
         # MinIO/S3 Configuration
@@ -454,6 +462,6 @@ LOGGING = {
     },
 }
 
-CSRF_TRUSTED_ORIGINS = ['https://school-chale-hum.arpansahu.space', ]
+CSRF_TRUSTED_ORIGINS = [f'{PROTOCOL}://{DOMAIN}', f'{PROTOCOL}://*.{DOMAIN}']
 # Django 4.2 compatibility
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
