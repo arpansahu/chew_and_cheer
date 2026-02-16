@@ -45,7 +45,7 @@ pipeline {
                         // Compute derived variables
                         env.BUILD_PROJECT_NAME = "${env.ENV_PROJECT_NAME}_build"
                         env.PROJECT_NAME_WITH_DASH = env.ENV_PROJECT_NAME.replace('_', '-')
-                        env.REGISTRY = "${env.DOCKER_REGISTRY}/${env.DOCKER_REPOSITORY}"
+                        env.REGISTRY = "${env.DOCKER_REGISTRY}/${env.DOCKER_REPOSITORY}/${env.DOCKER_IMAGE_NAME}"
                         env.REPOSITORY = "${env.DOCKER_REGISTRY}/${env.DOCKER_REPOSITORY}"
                         env.IMAGE_TAG = "${env.BUILD_ID}"
                         
@@ -220,7 +220,7 @@ else:
                     script {
                         // Log in to Docker registry using environment variables without direct interpolation
                         sh '''
-                        echo $DOCKER_REGISTRY_PASSWORD | docker login ${REGISTRY} -u $DOCKER_REGISTRY_USERNAME --password-stdin
+                        echo $DOCKER_REGISTRY_PASSWORD | docker login ${DOCKER_REGISTRY} -u $DOCKER_REGISTRY_USERNAME --password-stdin
                         '''
 
                         // Push the Docker image to the registry
