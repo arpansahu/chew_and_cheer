@@ -45,7 +45,7 @@ def test_user_credentials():
 def authenticated_page(page: Page, test_user_credentials, base_url):
     """Login and return authenticated page"""
     # Navigate to login page (correct URL: /accounts/login/)
-    page.goto(f"{base_url}/accounts/login/", wait_until="domcontentloaded")
+    page.goto(f"{base_url}/accounts/login/", wait_until="load")
     
     # Wait a bit for any redirects or dynamic content
     page.wait_for_timeout(1000)
@@ -57,7 +57,7 @@ def authenticated_page(page: Page, test_user_credentials, base_url):
         return page
     
     # Wait for page to be fully loaded
-    page.wait_for_load_state("networkidle", timeout=10000)
+    page.wait_for_load_state("load")
     
     # Fill login form
     try:
@@ -68,7 +68,7 @@ def authenticated_page(page: Page, test_user_credentials, base_url):
         page.locator("button[type='submit']").click()
         
         # Wait for navigation after login
-        page.wait_for_load_state("networkidle", timeout=10000)
+        page.wait_for_load_state("load")
         
     except Exception as e:
         pytest.skip(f"Login failed: {e}")
